@@ -1,0 +1,60 @@
+.section {
+    margin-bottom: 2rem;
+  }
+  
+  img {
+    border-radius: 0.5rem;
+    object-fit: cover;
+  }
+  
+  button {
+    background-color: transparent;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  button:hover {
+    color: #f9a825;
+  }
+
+  section { 
+    padding-top: 320px; /* Añade 100px de espacio arriba para que el contenido no se superponga */
+    margin-top: -300px; /* Empuja la sección 100px hacia arriba */
+   
+  }
+  .app-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  /* Estilo para el ion-avatar que mostrará el perfil */
+  ion-avatar img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+  }
+  :root {
+    --ion-color-menu: #9fffff;
+    --ion-color-menu-rgb: 159,255,255;
+    --ion-color-menu-contrast: #000000;
+    --ion-color-menu-contrast-rgb: 0,0,0;
+    --ion-color-menu-shade: #8ce0e0;
+    --ion-color-menu-tint: #a9ffff;
+  }
+  
+  .ion-color-menu {
+    --ion-color-base: var(--ion-color-menu);
+    --ion-color-base-rgb: var(--ion-color-menu-rgb);
+    --ion-color-contrast: var(--ion-color-menu-contrast);
+    --ion-color-contrast-rgb: var(--ion-color-menu-contrast-rgb);
+    --ion-color-shade: var(--ion-color-menu-shade);
+    --ion-color-tint: var(--ion-color-menu-tint);
+  }
+  
+  
+  
