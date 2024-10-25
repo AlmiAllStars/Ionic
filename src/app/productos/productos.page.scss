@@ -55,6 +55,10 @@
     --ion-color-shade: var(--ion-color-menu-shade);
     --ion-color-tint: var(--ion-color-menu-tint);
   }
+
+  ion-content {
+    --padding-top: 80px; /* O el tamaño de tu header */
+  }
   
   
   

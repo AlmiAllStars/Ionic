@@ -1,44 +1,10 @@
-<ion-header>
-  <ion-toolbar color="light">
-    <ion-buttons slot="start">
-      <ion-button>
-        <img src="../../assets/icon/LogoJuegalmi.png" alt="Juegalmi" class="h-8 w-8"/>
-      </ion-button>
-    </ion-buttons>
-    
-    <ion-title>
-      <span class="app-title">Juegalmi</span>
-    </ion-title>
 
-    <ion-buttons slot="end">
-      <!-- Icono de campanita de notificaciones -->
-      <ion-button>
-        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
-      </ion-button>
-
-      <!-- Icono de carrito de compras -->
-      <ion-button>
-        <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
-      </ion-button>
-
-      <!-- Icono de logueo o perfil circular -->
-      <ion-button>
-        <ion-avatar>
-          <img src="../../assets/sample-image.jpg"/>
-        </ion-avatar>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
-
-
-<ion-content class="ion-padding">
+<ion-content class="ion-padding"  fullscreen="false">
   <div class="w-full bg-gray-100 text-black py-2">
     <div class="flex justify-around items-center">
       <button class="focus:outline-none px-4"  (click)="scrollToSection('productos')">
-        <span *ngIf="tabs==1" class="text-base font-semibold text-orange-500">Video Juegos</span>
-        <span *ngIf="tabs!=1" class="text-base font-semibold text-gray-600">Video Juegos</span>
+        <span *ngIf="tabs==1" class="text-base font-semibold text-orange-500">Games</span>
+        <span *ngIf="tabs!=1" class="text-base font-semibold text-gray-600">Games</span>
         <div *ngIf="tabs==1" class="h-1 w-full bg-orange-500 mt-1"></div>
       </button>
       <button class="focus:outline-none px-4"  (click)="scrollToSection('alquileres')" >
