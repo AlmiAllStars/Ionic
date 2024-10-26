@@ -1,27 +1,22 @@
 <ion-header>
-  <ion-toolbar color="light">
+  <ion-toolbar color="menu">
     <ion-buttons slot="start">
       <ion-button>
         <img src="../../assets/icon/LogoJuegalmi.png" alt="Juegalmi" class="h-8 w-8"/>
       </ion-button>
-    </ion-buttons>
-    
-    <ion-title>
       <span class="app-title">Juegalmi</span>
-    </ion-title>
+    </ion-buttons>
 
     <ion-buttons slot="end">
-      <!-- Icono de campanita de notificaciones -->
-      <ion-button>
+      <ion-button id="notifications-button">
+        <div class="noti-length">{{ notifications.length }}</div>
         <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
       </ion-button>
 
-      <!-- Icono de carrito de compras -->
-      <ion-button>
-        <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+      <ion-button (click)="openCart()">
+        <ion-icon class="cart" slot="icon-only" name="cart-outline"></ion-icon>
       </ion-button>
 
-      <!-- Icono de logueo o perfil circular -->
       <ion-button>
         <ion-avatar>
           <img src="../../assets/sample-image.jpg"/>
@@ -30,15 +25,75 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
+    <!-- Popover de las notificaciones -->
+<ion-popover class="notificationPop" trigger="notifications-button" side="bottom" alignment="center">
+  <ion-content class="ion-padding" >
+    <div *ngIf="notifications && notifications.length > 0">
+      <div *ngFor="let notification of notifications" class="flex items-center justify-between border-b border-gray-200 textoNoti">
+        <span>{{ notification.text }}</span>
+        <ion-icon [name]="notification.icon"></ion-icon>
+      </div>
+    </div>
+    <div *ngIf="!notifications || notifications.length === 0">
+      <p>No notifications available.</p>
+    </div>
+  </ion-content>
+</ion-popover>
+
+    <!-- Modal del carrito -->
+<ion-modal [isOpen]="isCartOpen" cssClass="cart-modal" (didDismiss)="closeCart()">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="closeCart()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Carro</ion-title>
+      <ion-buttons slot="end">
+        <ion-button>
+          <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+    <div class="delivery-info">
+      <p>Entregar en <span class="address">48960</span></p>
+    </div>
+
+    <div *ngIf="cartItems && cartItems.length > 0">
+      <div *ngFor="let item of cartItems" class="cart-item">
+        <img [src]="item.imageUrl" alt="{{ item.title }}" class="item-img">
+        <div class="item-details">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.price | currency }} / ud.</p>
+        </div>
+        <div class="item-actions">
+          <span>{{ item.quantity }} ud.</span>
+          <ion-icon name="trash-outline" (click)="removeItem(item)"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-summary">
+      <p>Total aproximado: {{ total | currency }}</p>
+      <ion-button expand="block" color="success">Tramitar pedido</ion-button>
+    </div>
+  </ion-content>
+</ion-modal>
+
+    <!-- Rutas de las tabs -->
 <ion-router-outlet></ion-router-outlet>
+
+    <!-- Botones de las tabs -->
 <ion-tabs>
-  
   <ion-tab-bar slot="bottom">
     <ion-tab-button *ngFor="let tab of tabButtons" [tab]="tab.path">
       <ion-icon aria-hidden="true" [name]="tab.icon"></ion-icon>
       <ion-label>{{ tab.title }}</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
-
-
 </ion-tabs>
