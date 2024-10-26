@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="menu">
     <ion-buttons slot="start">
-      <ion-button>
+      <ion-button (click)="navigateToHome()">
         <img src="../../assets/icon/LogoJuegalmi.png" alt="Juegalmi" class="h-8 w-8"/>
       </ion-button>
       <span class="app-title">Juegalmi</span>
@@ -17,7 +17,7 @@
         <ion-icon class="cart" slot="icon-only" name="cart-outline"></ion-icon>
       </ion-button>
 
-      <ion-button>
+      <ion-button (click)="openLoginModal()">
         <ion-avatar>
           <img src="../../assets/sample-image.jpg"/>
         </ion-avatar>
@@ -42,49 +42,117 @@
 </ion-popover>
 
     <!-- Modal del carrito -->
-<ion-modal [isOpen]="isCartOpen" cssClass="cart-modal" (didDismiss)="closeCart()">
-  <ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-button (click)="closeCart()">
-          <ion-icon name="arrow-back-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-      <ion-title>Carro</ion-title>
-      <ion-buttons slot="end">
-        <ion-button>
-          <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
+    <ion-modal [isOpen]="isCartOpen" cssClass="cart-modal" (didDismiss)="closeCart()" animated="false">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-button (click)="closeCart()" color="menu">
+                <ion-icon name="arrow-back-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+            <ion-buttons slot="end">
+              <ion-button color="danger" (click)="clearCart()">
+                <ion-icon name="trash-bin-outline"></ion-icon>
+              </ion-button>              
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+    
+        <ion-content class="ion-padding">
+          <h1 class="cart-title">Carro</h1>
+          <div class="delivery-info">
+            <p>Entregar en <span class="address">48960</span></p>
+          </div>
+          <div *ngIf="cartItems && cartItems.length > 0">
+            <div *ngFor="let item of cartItems" class="cart-item">
+              <img [src]="item.imagen" alt="{{ item.nombre }}" class="item-img">
+              <div class="item-details">
+                <h3>{{ item.nombre }}</h3>
+                <p>
+                  <span class="price">{{ item.precio | number:'1.2-2' }} €</span>
+                  <span class="unit">/ud.</span>
+                </p>
+              </div>
+              <div class="item-actions">
+                <span class="item-quantity">{{ item.cantidad }} ud.</span>
+                <div class="action-buttons">
+                  <ion-button 
+                    [fill]="item.cantidad > 1 ? 'solid' : 'outline'" 
+                    [color]="item.cantidad > 1 ? 'warning' : 'warning'" 
+                    (click)="item.cantidad > 1 ? decreaseQuantity(item) : removeItem(item)">
+                    <ion-icon 
+                      [name]="item.cantidad > 1 ? 'remove-outline' : 'trash-outline'" 
+                      [style.color]="item.cantidad > 1 ? 'brown' : '#8B4513'">
+                    </ion-icon>
+                  </ion-button>
 
-  <ion-content class="ion-padding">
-    <div class="delivery-info">
-      <p>Entregar en <span class="address">48960</span></p>
-    </div>
+                  <ion-button fill="solid" color="warning" (click)="increaseQuantity(item)">
+                    <ion-icon name="add-outline"></ion-icon>
+                  </ion-button>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+    
+          <div class="cart-summary">
+            <div class="summary-row">
+              <span class="total-label">Total aproximado<ion-icon name="information-circle-outline" (click)="showInfo()" class="info-icon"></ion-icon></span>
+              
+              <span class="total-amount">{{ total | currency:'EUR':'symbol':'1.2-2' }}</span>
+            </div>
+            <ion-button expand="block" color="success">Tramitar pedido</ion-button>
+          </div>          
+        </ion-content>
+      </ng-template>
+    </ion-modal>
 
-    <div *ngIf="cartItems && cartItems.length > 0">
-      <div *ngFor="let item of cartItems" class="cart-item">
-        <img [src]="item.imageUrl" alt="{{ item.title }}" class="item-img">
-        <div class="item-details">
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.price | currency }} / ud.</p>
-        </div>
-        <div class="item-actions">
-          <span>{{ item.quantity }} ud.</span>
-          <ion-icon name="trash-outline" (click)="removeItem(item)"></ion-icon>
-        </div>
-      </div>
-    </div>
-
-    <div class="cart-summary">
-      <p>Total aproximado: {{ total | currency }}</p>
-      <ion-button expand="block" color="success">Tramitar pedido</ion-button>
-    </div>
-  </ion-content>
-</ion-modal>
-
+    <!-- Modal de Usuario -->
+    <ion-modal [isOpen]="isLoginModalOpen" (didDismiss)="closeLoginModal()" class="login-modal">
+      <ng-template>
+        <ion-content class="ion-padding login-modal-content">
+          <!-- Verifica si el usuario está logueado o no -->
+          <div *ngIf="!isLoggedIn; else loggedInContent">
+            <div class="modal-header">
+              <img src="../../assets/icon/LogoJuegalmi.png" alt="Juegalmi Logo" class="logo" />
+              <h2>Iniciar Sesión</h2>
+            </div>
+    
+            <ion-item>
+              <ion-label position="floating">Correo Electrónico</ion-label>
+              <ion-input type="email" [(ngModel)]="email"></ion-input>
+            </ion-item>
+    
+            <ion-item>
+              <ion-label position="floating">Contraseña</ion-label>
+              <ion-input type="password" [(ngModel)]="password"></ion-input>
+            </ion-item>
+    
+            <div class="login-actions">
+              <ion-button expand="full" color="primary" (click)="login()">Iniciar Sesión</ion-button>
+              <ion-button fill="clear" color="medium" (click)="recuperarContrasena()">¿No recuerdo mi contraseña?</ion-button>
+            </div>
+    
+            <div class="register-section">
+              <p>¿Nuevo en Juegalmi?</p>
+              <ion-button expand="full" color="secondary" (click)="irARegistro()">Crear una cuenta</ion-button>
+            </div>
+          </div>
+    
+          <!-- Contenido para cuando el usuario está logueado -->
+          <ng-template #loggedInContent>
+            <div class="logged-in-content">
+              <!-- Aquí puedes añadir el contenido para el usuario logueado -->
+              <h2>Bienvenido de nuevo, {{ userName }}!</h2>
+              <!-- Opcionalmente, agrega más opciones aquí -->
+            </div>
+          </ng-template>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+    
+    
     <!-- Rutas de las tabs -->
 <ion-router-outlet></ion-router-outlet>
 

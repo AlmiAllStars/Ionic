@@ -1,184 +1,384 @@
-
 .section {
-    margin-bottom: 2rem;
-  }
-  
-  img {
-    border-radius: 0.5rem;
-    object-fit: cover;
-  }
-  
-  button {
-    background-color: transparent;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s;
-  }
-  
-  button:hover {
-    color: #f9a825;
+  margin-bottom: 2rem;
+}
+
+img {
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+button {
+  background-color: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+button:hover {
+  color: #f9a825;
+}
+
+.app-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+ion-avatar img {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  margin-top: 0px;
+}
+
+:root {
+  --ion-color-menu: #9fffff;
+  --ion-color-menu-rgb: 159, 255, 255;
+  --ion-color-menu-contrast: #000000;
+  --ion-color-menu-contrast-rgb: 0, 0, 0;
+  --ion-color-menu-shade: #8ce0e0;
+  --ion-color-menu-tint: #a9ffff;
+}
+
+.ion-color-menu {
+  --ion-color-base: var(--ion-color-menu);
+  --ion-color-base-rgb: var(--ion-color-menu-rgb);
+  --ion-color-contrast: var(--ion-color-menu-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-menu-contrast-rgb);
+  --ion-color-shade: var(--ion-color-menu-shade);
+  --ion-color-tint: var(--ion-color-menu-tint);
+}
+
+ion-toolbar {
+  height: 52px;
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --padding-top: 5px;
+}
+
+ion-title {
+  font-size: 1rem;
+}
+
+ion-button {
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+//Ponemos el padding end del penultimo ion-button a 10px
+ion-button:nth-last-child(2) {
+  --padding-end: 10px;
+}
+
+ion-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.app-title {
+  font-family: 'Roboto Slab', serif;
+  margin-left: 5px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #333;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+ion-popover {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.border-b {
+  border-bottom-width: 1px;
+}
+
+.border-gray-200 {
+  border-color: #e5e7eb;
+}
+
+.notificationPop {
+  --min-width: 200px;
+  --max-height: 200px;
+}
+
+.notificationPop ion-content {
+  height: 100%;
+  max-height: 200px;
+  /* Limitar el alto del contenido */
+  overflow-y: auto;
+  /* Asegurar que se puede hacer scroll */
+}
+
+.textoNoti {
+  font-size: 0.8rem;
+  color: #333;
+  margin: 5px;
+}
+
+.noti-length {
+  color: white;
+  position: absolute;
+  top: 0px;
+  left: 16px;
+  font-weight: 600;
+  font-size: 12px;
+  min-width: 14px;
+  z-index: 10;
+  background-color: red;
+  border-radius: 50%;
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
 
-  .app-title {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
-  
-  ion-avatar img {
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    margin-top: 0px;
-  }
-  :root {
-    --ion-color-menu: #9fffff;
-    --ion-color-menu-rgb: 159,255,255;
-    --ion-color-menu-contrast: #000000;
-    --ion-color-menu-contrast-rgb: 0,0,0;
-    --ion-color-menu-shade: #8ce0e0;
-    --ion-color-menu-tint: #a9ffff;
-  }
-  
-  .ion-color-menu {
-    --ion-color-base: var(--ion-color-menu);
-    --ion-color-base-rgb: var(--ion-color-menu-rgb);
-    --ion-color-contrast: var(--ion-color-menu-contrast);
-    --ion-color-contrast-rgb: var(--ion-color-menu-contrast-rgb);
-    --ion-color-shade: var(--ion-color-menu-shade);
-    --ion-color-tint: var(--ion-color-menu-tint);
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
   }
 
-  ion-toolbar {
-    height: 52px;
-    --padding-start: 15px;
-    --padding-end: 15px;
-    --padding-top: 5px;
+  to {
+    transform: translateX(100%);
+    opacity: 0;
   }
-  
-  ion-title {
-    font-size: 1rem;
-  }
-  
-  ion-button {
-    --padding-start: 0;
-    --padding-end: 0;
-  }
+}
 
-  //Ponemos el padding end del penultimo ion-button a 10px
-  ion-button:nth-last-child(2) {
-    --padding-end: 10px;
-  }
-  
-  ion-avatar {
-    width: 32px;
-    height: 32px;
-  }
+.cart-modal {
+  --border-radius: 0;
+  animation: slideInFromRight 0.3s ease-out forwards;
+}
 
-  .app-title {
-    font-family: 'Roboto Slab', serif;
-    margin-left: 5px;
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #333; 
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-  }
-  ion-popover {
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .flex {
-    display: flex;
-  }
-  
-  .items-center {
-    align-items: center;
-  }
-  
-  .justify-between {
-    justify-content: space-between;
-  }
-  
-  .p-2 {
-    padding: 0.5rem;
-  }
-  
-  .border-b {
-    border-bottom-width: 1px;
-  }
-  
-  .border-gray-200 {
-    border-color: #e5e7eb;
-  }
+.cart-modal.hidden {
+  animation: slideOutToRight 0.3s ease-out forwards;
+}
 
-  .notificationPop {
-    --min-width: 200px;
-    --max-height: 200px;
-  }
-  
-  .notificationPop ion-content {
-    height: 100%;
-    max-height: 200px; /* Limitar el alto del contenido */
-    overflow-y: auto;  /* Asegurar que se puede hacer scroll */
-  }
+.cart-modal {
+  --width: 100%;
+  --min-height: 100%;
+  --max-height: 100%;
+}
 
-  .textoNoti {
-    font-size: 0.8rem;
-    color: #333;
-    margin: 5px;
-  }
-
-  .noti-length {
-    color: white;
-    position: absolute;
-    top: 0px;
-    left: 16px;
-    font-weight: 600;
-    font-size: 12px;
-    min-width: 14px;
-    z-index: 10;
-    background-color: red;
-    border-radius: 50%;
-  }
-
-  @keyframes slideInFromRight {
-    from {
-      transform: translateX(100%); /* Inicia fuera de la pantalla */
-    }
-    to {
-      transform: translateX(0); /* Termina en la posición normal */
-    }
-  }
-  
-  @keyframes slideOutToRight {
-    from {
-      transform: translateX(0); /* Inicia en la posición normal */
-    }
-    to {
-      transform: translateX(100%); /* Termina fuera de la pantalla */
-    }
-  }
-  
-  .cart-modal {
-    --width: 100%;
-    --max-height: 100%;
-    --border-radius: 0;
-    animation: slideInFromRight 0.3s ease-out forwards;
-  }
-  
-  .cart-modal.ion-page-hidden {
-    animation: slideOutToRight 0.3s ease-out forwards;
-  }
-  
-  
+.cart-modal .modal-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+}
 
 
-  
-  
-  
-  
-  
+.cart-modal ion-header {
+  --border-width: 0;
+  --ion-toolbar-shadow: none;
+  box-shadow: none;
+}
+
+
+.cart-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  padding: 10px 5px;
+  padding-top: 0;
+  margin-top: 5px;
+  color: #333;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 0.5px solid #e0e0e0;
+}
+
+
+.item-img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.item-details {
+  flex: 1;
+}
+
+
+.item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-quantity {
+  color: #8B4513;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-buttons ion-button {
+  --border-radius: 12px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  width: 40px;
+  height: 24px;
+  min-height: 24px;
+  line-height: 24px;
+  --internal-height: 24px;
+}
+
+.action-buttons ion-button ion-icon {
+  font-size: 16px;
+}
+
+.cart-summary {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px;
+  border-top: 1px solid #e0e0e0;
+  background-color: white; /* Asegura que el fondo sea blanco */
+  text-align: center;
+  z-index: 10; /* Asegura que esté encima del contenido */
+}
+
+ion-content {
+  padding-bottom: 70px; /* Espacio adicional para evitar que el contenido quede cubierto por el sumario */
+}
+
+
+.delivery-info {
+  font-size: 0.9rem;
+  font-weight: 200;
+  color: #000000;
+  padding: 10px 5px;
+}
+
+.delivery-info::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin-top: 5px;
+}
+
+.delivery-info .address {
+  color: green;
+}
+
+.price {
+  color: red;
+  font-weight: bold;
+}
+
+
+.unit {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+/* Estilo del contenedor de la fila de total */
+.summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+/* Estilo para "Total aproximado" */
+.total-label {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Estilo para el monto total */
+.total-amount {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Estilo para el icono de información */
+.info-icon {
+  font-size: 1rem;
+  color: #999; /* Color gris para el icono */
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.login-modal .modal-wrapper {
+  border-radius: 15px;
+  max-width: 400px;
+  max-height: 90%;
+  margin: auto;
+}
+
+.login-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.modal-header {
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+.login-actions ion-button {
+  margin-top: 10px;
+}
+
+.register-section p {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #666;
+}
+

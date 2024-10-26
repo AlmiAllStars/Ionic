@@ -1,12 +1,18 @@
-import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { ModalController, NavController, ToastController } from '@ionic/angular';
+import { CarritoService } from '../services/carrito.service';
+import { NotificacionService } from '../services/notificacion.service';
+import { ProductoService } from '../services/producto.service';
+import { CarritoItem } from '../models/carrito-item';
+import { Producto } from '../models/producto';
+import { AutenticacionService } from '../services/autenticacion.service';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss']
 })
-export class TabsPage {
+export class TabsPage implements OnInit {
   public tabButtons = [
     { title: 'Home', icon: 'cart', path: 'productos' },
     { title: 'Galería', icon: 'images', path: 'galeria' },
@@ -14,45 +20,161 @@ export class TabsPage {
     { title: 'About-us', icon: 'information-circle', path: 'about-us' }
   ];
 
-  notifications = [
-    { text: 'You have a new message!', icon: 'mail-outline' },
-    { text: 'Your order has been shipped!', icon: 'cube-outline' },
-    { text: 'System update available', icon: 'cloud-download-outline' },
-    { text: 'Friend request accepted', icon: 'person-add-outline' },{ text: 'You have a new message!', icon: 'mail-outline' },
-    { text: 'Your order has been shipped!', icon: 'cube-outline' },
-    { text: 'System update available', icon: 'cloud-download-outline' },
-    { text: 'Friend request accepted', icon: 'person-add-outline' },
-  ];
-  
-  isCartOpen = false;
-  cartItems = [
-    { title: 'Game 1', quantity: 1, price: 3.15, imageUrl: '../../assets/sample-image.jpg' },
-    { title: 'Console 2', quantity: 2, price: 2.50, imageUrl: '../../assets/sample-image.jpg' },
-    { title: 'Accessory 3', quantity: 1, price: 1.20, imageUrl: '../../assets/sample-image.jpg' }
-  ];
+  notifications: any[] = [];
+  products: Producto[] = [];
+  cartItems: CarritoItem[] = [];
   total = 0;
+  isCartOpen = false;
 
-  constructor() {
-    this.calculateTotal();
+  isLoginModalOpen = false;
+  isLoggedIn = false;
+  userName: string = '';
+
+  email: string = '';
+  password: string = '';
+
+  constructor(
+    private navController: NavController,
+    private carritoService: CarritoService,
+    private notificacionService: NotificacionService,
+    private productoService: ProductoService,
+    private modalController: ModalController,
+    private toastController: ToastController,
+    private autenticacionService: AutenticacionService
+  ) {}
+
+  ngOnInit() {
+    // Suscribirse a los productos
+    this.productoService.products$.subscribe(products => {
+      this.products = products;
+    });
+
+    // Suscribirse a las notificaciones
+    this.notificacionService.notifications$.subscribe(notifications => {
+      this.notifications = notifications;
+    });
+
+    // Suscribirse al carrito
+    this.carritoService.cart$.subscribe(cartItems => {
+      this.cartItems = cartItems;
+      this.calculateTotal();
+    });
+
+    this.verificarSesion();
+  }
+
+  openLoginModal() {
+    this.isLoginModalOpen = true;
+    console.log('Abriendo modal de login');
+  }
+
+  closeLoginModal() {
+    this.isLoginModalOpen = false; // Cierra el modal de login
+    this.email = '';               // Limpia el email y contraseña después de cerrar
+    this.password = '';
+  }
+
+  async login() {
+    try {
+      const response = await this.autenticacionService.login(this.email, this.password).toPromise();
+      if (response.success) {
+        this.isLoggedIn = true;              // Marca como logueado
+        this.userName = response.usuario.nombre; // Guarda el nombre del usuario
+        this.showToast('Inicio de sesión exitoso');
+        this.closeLoginModal();
+      } else {
+        this.showToast(response.error || 'Error al iniciar sesión');
+      }
+    } catch (error) {
+      console.error('Error en el login:', error);
+      this.showToast('Ocurrió un error al iniciar sesión');
+    }
+  }
+
+  verificarSesion() {
+    this.autenticacionService.verificarSesion().subscribe(response => {
+      this.isLoggedIn = response.success;
+      if (this.isLoggedIn) {
+        this.userName = response.usuario.nombre; // Guarda el nombre del usuario si está logueado
+      }
+    });
+  }
+
+  logout() {
+    this.autenticacionService.logout(); // Llama al método de logout en el servicio
+    this.isLoggedIn = false;            // Marca como no logueado
+    this.userName = '';                 // Limpia el nombre del usuario
+    this.showToast('Sesión cerrada');
+  }
+
+  recuperarContrasena() {
+    this.showToast('Funcionalidad de recuperación aún no implementada');
+  }
+
+  irARegistro() {
+    this.closeLoginModal();
+    // Navegar a la página de registro (cambiar la ruta según sea necesario)
+  }
+
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      position: 'bottom'
+    });
+    toast.present();
+  }
+
+  navigateToHome() {
+    this.navController.navigateRoot('/tabs/productos');
   }
 
   openCart() {
     this.isCartOpen = true;
-    console.log(this.isCartOpen);
   }
 
   closeCart() {
-    this.isCartOpen = false;
+    const modalElement = document.querySelector('.cart-modal');
+
+    if (modalElement) {
+      modalElement.classList.add('hidden');
+      setTimeout(() => {
+        this.isCartOpen = false;
+        modalElement.classList.remove('hidden');
+      }, 300);
+    }
   }
 
-  removeItem(item : any) {
-    this.cartItems = this.cartItems.filter(cartItem => cartItem !== item);
-    this.calculateTotal();
+  addToCart(product: Producto) {
+    this.carritoService.addToCart(product);
+  }
+
+  removeItem(item: CarritoItem) {
+    this.carritoService.removeFromCart(item.id);
+  }
+
+  clearCart() {
+    this.carritoService.clearCart();
+  }
+
+  decreaseQuantity(item: CarritoItem) {
+    this.carritoService.decreaseQuantity(item.id);
+  }
+
+  increaseQuantity(item: CarritoItem) {
+    this.carritoService.increaseQuantity(item.id);
   }
 
   calculateTotal() {
-    this.total = this.cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    this.total = this.cartItems.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
   }
-  
 
+  async showInfo() {
+    const toast = await this.toastController.create({
+      message: 'El precio de algunas reparaciones pueden variar.',
+      duration: 3000,
+      position: 'bottom'
+    });
+    await toast.present();
+  }
 }

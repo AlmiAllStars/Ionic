@@ -31,6 +31,7 @@ const routes: Routes = [
     loadChildren: () => import('./control-panel/control-panel.module').then( m => m.ControlPanelPageModule)
   }
 
+
 ];
 @NgModule({
   imports: [
