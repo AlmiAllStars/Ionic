@@ -14,10 +14,10 @@ export class GaleriaPage {
     { url: '../../assets/gallery/Evento1.jpg', title: 'Evento 1', type: 'Evento' },
     { url: '../../assets/gallery/Tienda1.jpg', title: 'Tienda 1', type: 'Tienda' },
     { url: '../../assets/gallery/Evento2.webp', title: 'Evento 2', type: 'Evento' },
-    { url: '../../assets/gallery/Gente1.jpg', title: 'Reunión de Clientes', type: 'Evento' },
+    { url: '../../assets/gallery/Gente1.jpg', title: 'Flipaos', type: 'Evento' },
     { url: '../../assets/gallery/Tienda2.jpg', title: 'Tienda 2', type: 'Tienda' },
     { url: '../../assets/gallery/Evento1.jpg', title: 'Evento 1', type: 'Evento' },
-    { url: '../../assets/gallery/Gente1.jpg', title: 'Reunión de Clientes', type: 'Evento' },
+    { url: '../../assets/gallery/Gente1.jpg', title: 'Flipaos', type: 'Evento' },
     { url: '../../assets/gallery/Tienda1.jpg', title: 'Tienda 1', type: 'Tienda' },
     { url: '../../assets/gallery/Evento2.webp', title: 'Evento 2', type: 'Evento' },
     { url: '../../assets/gallery/Tienda2.jpg', title: 'Tienda 2', type: 'Tienda' }
