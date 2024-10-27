@@ -139,15 +139,87 @@
               <ion-button expand="full" color="secondary" (click)="irARegistro()">Crear una cuenta</ion-button>
             </div>
           </div>
-    
-          <!-- Contenido para cuando el usuario está logueado -->
+
           <ng-template #loggedInContent>
-            <div class="logged-in-content">
-              <!-- Aquí puedes añadir el contenido para el usuario logueado -->
-              <h2>Bienvenido de nuevo, {{ userName }}!</h2>
-              <!-- Opcionalmente, agrega más opciones aquí -->
-            </div>
+            <ion-content class="ion-padding logged-in-content" scrollY="false" >
+              
+              <div class="modal-header-user">
+                <ion-button slot="start" fill="clear" (click)="closeLoginModal()" class="close-button">
+                  <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+              
+                <div class="company-logo-container">
+                  <img src="../../assets/icon/textoJuegalmi.png" alt="Nombre Empresa" class="company-logo" />
+                </div>
+              
+                <ion-button fill="clear" style="visibility: hidden;">
+                  <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+              </div>
+              
+              
+          
+              <!-- Información del usuario -->
+              <div class="user-info">
+                <div class="profile-picture">
+                  <img [src]="userPicture || '../../assets/icon/default-avatar.png'" alt="User Avatar" />
+                  <ion-icon name="camera-outline" class="camera-icon"></ion-icon>
+                </div>
+                
+                <div class="user-details">
+                  <h2>{{ userName }}</h2>
+                  <p>{{ userEmail }}</p>
+                </div>
+              
+                <div class="theme-toggle">
+                    <ion-toggle [(ngModel)]="isDarkMode" (ionChange)="toggleChange($event)" labelPlacement="stacked">Dark Mode</ion-toggle
+                    >
+                </div>
+              </div>
+              
+          
+              <div class="menu-options">
+                <div>
+                <ion-item button>
+                  <ion-icon name="person-outline" slot="start"></ion-icon>
+                  <ion-label>Gestionar Cuenta</ion-label>
+                </ion-item>
+                <ion-item button>
+                  <ion-icon name="settings-outline" slot="start"></ion-icon>
+                  <ion-label>Panel de Control</ion-label>
+                </ion-item>
+                <ion-item button>
+                  <ion-icon name="heart-outline" slot="start"></ion-icon>
+                  <ion-label>Lista de Deseos</ion-label>
+                </ion-item>
+                <ion-item button>
+                  <ion-icon name="cart-outline" slot="start"></ion-icon>
+                  <ion-label>Mis Pedidos</ion-label>
+                </ion-item>
+                <ion-item button>
+                  <ion-icon name="notifications-outline" slot="start"></ion-icon>
+                  <ion-label>Configurar Notificaciones</ion-label>
+                </ion-item>
+                <ion-item button>
+                  <ion-icon name="trash-outline" slot="start"></ion-icon>
+                  <ion-label>Quiero darme de baja</ion-label>
+                </ion-item>
+              </div>
+
+                              <!-- Botón de Cerrar Sesión al final -->
+                <div class="logout-button">
+                  <ion-item button (click)="logout()">
+                    <ion-icon name="log-out-outline" slot="start"></ion-icon>
+                    <ion-label>Cerrar Sesión</ion-label>
+                  </ion-item>
+                </div>
+              </div>
+          
+
+            
+            </ion-content>
           </ng-template>
+          
         </ion-content>
       </ng-template>
     </ion-modal>

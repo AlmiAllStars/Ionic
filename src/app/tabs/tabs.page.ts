@@ -20,6 +20,7 @@ export class TabsPage implements OnInit {
     { title: 'About-us', icon: 'information-circle', path: 'about-us' }
   ];
 
+  isDarkMode = false;
   notifications: any[] = [];
   products: Producto[] = [];
   cartItems: CarritoItem[] = [];
@@ -29,7 +30,8 @@ export class TabsPage implements OnInit {
   isLoginModalOpen = false;
   isLoggedIn = false;
   userName: string = '';
-
+  userEmail: string = '';
+  userPicture: string = '';
   email: string = '';
   password: string = '';
 
@@ -63,9 +65,23 @@ export class TabsPage implements OnInit {
     this.verificarSesion();
   }
 
+  initializeDarkPalette(isDark: any) {
+    this.isDarkMode = isDark;
+    this.toggleDarkPalette(isDark);
+  }
+
+  // Listen for the toggle check/uncheck to toggle the dark palette
+  toggleChange(ev : any) {
+    this.toggleDarkPalette(ev.detail.checked);
+  }
+
+  // Add or remove the "ion-palette-dark" class on the html element
+  toggleDarkPalette(shouldAdd : any) {
+    document.documentElement.classList.toggle('ion-palette-dark', shouldAdd);
+  }
+
   openLoginModal() {
     this.isLoginModalOpen = true;
-    console.log('Abriendo modal de login');
   }
 
   closeLoginModal() {
@@ -79,7 +95,9 @@ export class TabsPage implements OnInit {
       const response = await this.autenticacionService.login(this.email, this.password).toPromise();
       if (response.success) {
         this.isLoggedIn = true;              // Marca como logueado
-        this.userName = response.usuario.nombre; // Guarda el nombre del usuario
+        this.userName = response.usuario.nombre + " " + response.usuario.apellido;
+        this.userEmail = response.usuario.email;
+        this.userPicture = response.usuario.imagen;
         this.showToast('Inicio de sesión exitoso');
         this.closeLoginModal();
       } else {
@@ -95,7 +113,13 @@ export class TabsPage implements OnInit {
     this.autenticacionService.verificarSesion().subscribe(response => {
       this.isLoggedIn = response.success;
       if (this.isLoggedIn) {
-        this.userName = response.usuario.nombre; // Guarda el nombre del usuario si está logueado
+        this.userName = response.usuario.nombre + " " + response.usuario.apellido;
+        this.userEmail = response.usuario.email;
+        this.userPicture = response.usuario.imagen;
+        this.isDarkMode = localStorage.getItem('darkMode') === 'true';
+      }
+      else {
+        this.isDarkMode = false;
       }
     });
   }
