@@ -1,0 +1,73 @@
+.filter-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    font-weight: bold;
+  }
+  
+  ion-card {
+    text-align: center;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .image-title {
+    font-size: 0.9rem;
+    color: #333;
+  }
+
+  ion-header{
+    padding-top: 340px; /* Añade 100px de espacio arriba para que el contenido no se superponga */
+    margin-top: -300px; /* Empuja la sección 100px hacia arriba */
+  }
+
+  .image-modal {
+    --background: transparent;  /* Fondo transparente para ver detrás */
+  }
+  
+  .lightbox-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);  /* Fondo oscuro */
+  }
+  
+  .lightbox-image {
+    max-width: 90%;
+    max-height: 80vh;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .controls {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .controls ion-button {
+    --background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+  .image-modal .modal-wrapper {
+    animation: fadeInZoom 0.4s ease forwards;
+  }
+  
+  @keyframes fadeInZoom {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+    
