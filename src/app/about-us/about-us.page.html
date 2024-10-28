@@ -1,13 +1,61 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>about-us</ion-title>
+    <ion-title>Quiénes Somos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="about-content">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">about-us</ion-title>
+      <ion-title size="large">Quiénes Somos</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Sección de Encabezado -->
+  <div class="about-section">
+    <img src="../../assets/images/banner-about.jpg" alt="Sobre nosotros" class="about-banner">
+    <div class="about-intro">
+      <h2>Nuestra Historia</h2>
+      <p>
+        En Juegalmi, somos apasionados de la tecnología y el entretenimiento. Nos dedicamos a la venta y alquiler de videojuegos, reparación de dispositivos y mucho más.
+      </p>
+    </div>
+  </div>
+
+  <!-- Sección de Valores -->
+  <div class="about-section">
+    <h3>Nuestros Valores</h3>
+    <div class="values-grid">
+      <ion-card *ngFor="let value of valores">
+        <ion-icon [name]="value.icon" slot="start"></ion-icon>
+        <ion-card-content>
+          <h4>{{ value.title }}</h4>
+          <p>{{ value.description }}</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Sección de Equipo -->
+  <div class="about-section">
+    <h3>Conoce a Nuestro Equipo</h3>
+    <div class="team-grid">
+      <ion-card *ngFor="let member of equipo">
+        <img [src]="member.photo" alt="{{ member.name }}" class="team-photo">
+        <ion-card-content>
+          <h4>{{ member.name }}</h4>
+          <p>{{ member.role }}</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Sección de Contacto -->
+  <div class="about-section contact-section">
+    <h3>¿Necesitas Algo? Estamos Aquí</h3>
+    <p>Para cualquier duda o soporte, contáctanos:</p>
+    <ion-button color="primary" expand="block" href="mailto:contacto@juegalmi.com">
+      Contactar
+    </ion-button>
+  </div>
 </ion-content>

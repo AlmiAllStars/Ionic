@@ -1,12 +1,26 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Tiendas</ion-title>
+    <ion-title>Encuentranos</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <!-- Mapa -->
   <div id="map" style="width: 100%; height: 300px;"></div>
+
+  <!-- Tienda más cercana -->
+  <ion-card *ngIf="nearestTienda">
+    <ion-card-header>
+      <ion-card-title>Tu tienda más cercana</ion-card-title>
+      <p>{{ nearestTienda.nombre }}</p>
+      <p>Distancia: {{ estimatedTime }}</p>
+    </ion-card-header>
+    <ion-button expand="full" (click)="setRouteToNearestTienda()">Mostrar Ruta</ion-button>
+  </ion-card>
+
+  <ion-toolbar>
+    <ion-title>Nuestras Tiendas</ion-title>
+  </ion-toolbar>
 
   <!-- Lista de Tiendas -->
   <ion-list>

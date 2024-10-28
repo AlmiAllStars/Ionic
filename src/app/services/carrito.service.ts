@@ -10,6 +10,14 @@ export class CarritoService {
   private cartSubject = new BehaviorSubject<CarritoItem[]>([
     { id: 1, nombre: 'Game 1', descripcion: 'Un videojuego emocionante', precio: 3.15, cantidad: 1, imagen: '../../assets/sample-image.jpg' },
     { id: 2, nombre: 'Console 2', descripcion: 'Consola de última generación', precio: 2.50, cantidad: 2, imagen: '../../assets/sample-image.jpg' },
+    { id: 3, nombre: 'Accessory 3', descripcion: 'Accesorio para consola', precio: 1.20, cantidad: 1, imagen: '../../assets/sample-image.jpg' },{ id: 1, nombre: 'Game 1', descripcion: 'Un videojuego emocionante', precio: 3.15, cantidad: 1, imagen: '../../assets/sample-image.jpg' },
+    { id: 2, nombre: 'Console 2', descripcion: 'Consola de última generación', precio: 2.50, cantidad: 2, imagen: '../../assets/sample-image.jpg' },
+    { id: 3, nombre: 'Accessory 3', descripcion: 'Accesorio para consola', precio: 1.20, cantidad: 1, imagen: '../../assets/sample-image.jpg' },
+    { id: 1, nombre: 'Game 1', descripcion: 'Un videojuego emocionante', precio: 3.15, cantidad: 1, imagen: '../../assets/sample-image.jpg' },
+    { id: 2, nombre: 'Console 2', descripcion: 'Consola de última generación', precio: 2.50, cantidad: 2, imagen: '../../assets/sample-image.jpg' },
+    { id: 3, nombre: 'Accessory 3', descripcion: 'Accesorio para consola', precio: 1.20, cantidad: 1, imagen: '../../assets/sample-image.jpg' },
+    { id: 1, nombre: 'Game 1', descripcion: 'Un videojuego emocionante', precio: 3.15, cantidad: 1, imagen: '../../assets/sample-image.jpg' },
+    { id: 2, nombre: 'Console 2', descripcion: 'Consola de última generación', precio: 2.50, cantidad: 2, imagen: '../../assets/sample-image.jpg' },
     { id: 3, nombre: 'Accessory 3', descripcion: 'Accesorio para consola', precio: 1.20, cantidad: 1, imagen: '../../assets/sample-image.jpg' }
   ]);
   public cart$: Observable<CarritoItem[]> = this.cartSubject.asObservable();
