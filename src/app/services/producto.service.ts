@@ -14,7 +14,7 @@ export class ProductoService {
   public products$: Observable<Producto[]> = this.productsSubject.asObservable();
 
   obtenerProductos(): Observable<Producto[]> {
-    return this.products$; // Devuelve los productos de prueba
+    return this.products$;
   }
 
   obtenerProductoPorId(id: number): Observable<Producto | undefined> {

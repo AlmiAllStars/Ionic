@@ -8,12 +8,12 @@
     </ion-buttons>
 
     <ion-buttons slot="end">
-      <ion-button id="notifications-button">
+      <ion-button id="notifications-button" [style.display]="isLoggedIn ? 'block' : 'none'">
         <div class="noti-length">{{ notifications.length }}</div>
         <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
       </ion-button>
 
-      <ion-button (click)="openCart()">
+      <ion-button *ngIf="isLoggedIn" (click)="openCart()">
         <ion-icon class="cart" slot="icon-only" name="cart-outline"></ion-icon>
       </ion-button>
 
@@ -136,7 +136,8 @@
     
             <div class="register-section">
               <p>¿Nuevo en Juegalmi?</p>
-              <ion-button expand="full" color="secondary" (click)="irARegistro()">Crear una cuenta</ion-button>
+              <ion-button expand="full" color="secondary" (click)="openRegisterModal()">Crear una cuenta</ion-button>
+              <ion-button expand="full" color="tertiary" (click)="loginWithGoogle()">Iniciar sesión con Google</ion-button>
             </div>
           </div>
 
@@ -180,14 +181,10 @@
           
               <div class="menu-options">
                 <div>
-                <ion-item button>
-                  <ion-icon name="person-outline" slot="start"></ion-icon>
-                  <ion-label>Gestionar Cuenta</ion-label>
-                </ion-item>
-                <ion-item button>
-                  <ion-icon name="settings-outline" slot="start"></ion-icon>
-                  <ion-label>Panel de Control</ion-label>
-                </ion-item>
+                  <ion-item button (click)="navigateToCuenta()">
+                    <ion-icon name="person-outline" slot="start"></ion-icon>
+                    <ion-label>Gestionar Cuenta</ion-label>
+                  </ion-item>                  
                 <ion-item button>
                   <ion-icon name="heart-outline" slot="start"></ion-icon>
                   <ion-label>Lista de Deseos</ion-label>
@@ -223,6 +220,47 @@
         </ion-content>
       </ng-template>
     </ion-modal>
+
+    <ion-modal [isOpen]="isRegisterModalOpen" (didDismiss)="closeRegisterModal()" class="register-modal">
+      <ng-template>
+        <ion-content class="ion-padding register-modal-content">
+          <div class="modal-header">
+            <img src="../../assets/icon/LogoJuegalmi.png" alt="Juegalmi Logo" class="logo" />
+            <h2>Crear Cuenta</h2>
+          </div>
+    
+          <ion-item>
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input [(ngModel)]="nombre" required></ion-input>
+          </ion-item>
+    
+          <ion-item>
+            <ion-label position="floating">Apellido</ion-label>
+            <ion-input [(ngModel)]="apellido" required></ion-input>
+          </ion-item>
+    
+          <ion-item>
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input type="email" [(ngModel)]="email" required></ion-input>
+          </ion-item>
+    
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="password" [(ngModel)]="password" required></ion-input>
+          </ion-item>
+    
+          <ion-item>
+            <ion-label position="floating">Repetir Contraseña</ion-label>
+            <ion-input type="password" [(ngModel)]="repassword" required></ion-input>
+          </ion-item>
+    
+          <div class="register-actions">
+            <ion-button expand="full" color="secondary" (click)="registrar()">Registrar</ion-button>
+          </div>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+    
     
     
     <!-- Rutas de las tabs -->

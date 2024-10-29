@@ -1,0 +1,129 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closePage()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Cuenta de Juegalmi</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <!-- Foto de perfil -->
+  <div class="profile-header">
+    <ion-avatar class="profile-avatar">
+      <img [src]="user?.imagen ? user?.imagen : 'assets/icon/default-avatar.png'" alt="User Avatar" />
+    </ion-avatar>
+    <ion-button fill="clear" (click)="openEditModal('imagen')">Cambiar foto</ion-button>
+  </div>
+
+  <!-- Datos del usuario -->
+  <ion-list>
+    <ion-item lines="full" (click)="openEditModal('nombre')">
+      <ion-label>Nombre</ion-label>
+      <ion-text>{{ user?.nombre }}</ion-text>
+      <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+    </ion-item>
+
+    <ion-item lines="full" (click)="openEditModal('apellido')">
+      <ion-label>Apellido</ion-label>
+      <ion-text>{{ user?.apellido }}</ion-text>
+      <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-label>Email</ion-label>
+      <ion-text>{{ user?.email }}</ion-text>
+    </ion-item>
+
+    <ion-item lines="full" (click)="openEditModal('telefono')">
+      <ion-label>Teléfono</ion-label>
+      <ion-text>{{ user?.telefono }}</ion-text>
+      <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+    </ion-item>
+
+    <ion-item lines="full" (click)="openEditModal('direccion')">
+      <ion-label>Dirección</ion-label>
+      <ion-text>{{ user?.direccion || 'Sin dirección' }}</ion-text>
+      <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+    </ion-item>
+
+    <ion-item lines="full" (click)="openEditModal('codigoPostal')">
+      <ion-label>Código Postal</ion-label>
+      <ion-text>{{ user?.codigoPostal || 'Sin código postal' }}</ion-text>
+      <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-label>Fecha de Registro</ion-label>
+      <ion-text>{{ user?.fechaRegistro | date: 'longDate' }}</ion-text>
+    </ion-item>
+
+    <ion-item lines="full" (click)="openEditModal('contraseña')">
+      <ion-label>Contraseña</ion-label>
+      <ion-text>••••••••</ion-text>
+      <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+    </ion-item>
+  </ion-list>
+
+  <ion-modal [isOpen]="isEditModalOpen" (didDismiss)="closeEditModal()">
+    <ng-template>
+      <ion-content class="ion-padding">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Editar {{ fieldToEdit | titlecase }}</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="closeEditModal()">
+                <ion-icon name="close-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+  
+        <!-- Campos de edición específicos según el tipo de campo -->
+        <ion-list *ngIf="fieldToEdit">
+          <!-- Mostrar solo el valor actual para los campos inmutables -->
+          <ion-item>
+            <ion-label>{{ fieldToEdit | titlecase }}</ion-label>
+            <ion-text>{{ user?.[fieldToEdit] }}</ion-text>
+
+          </ion-item>
+          <!-- Editar Nombre, Apellido, Dirección y Código Postal -->
+          <ion-item *ngIf="fieldToEdit === 'nombre' || fieldToEdit === 'apellido' || fieldToEdit === 'direccion' || fieldToEdit === 'codigoPostal'">
+            <ion-label position="stacked">Nuevo {{ fieldToEdit | titlecase }}</ion-label>
+            <ion-input [(ngModel)]="editValue" placeholder="Ingrese el nuevo {{ fieldToEdit }}"></ion-input>
+          </ion-item>
+  
+          <!-- Editar Teléfono -->
+          <ion-item *ngIf="fieldToEdit === 'telefono'">
+            <ion-label position="stacked">Nuevo Teléfono</ion-label>
+            <ion-input [(ngModel)]="editValue" type="tel" placeholder="Ingrese el nuevo teléfono"></ion-input>
+          </ion-item>
+  
+          <!-- Editar Contraseña -->
+          <div *ngIf="fieldToEdit === 'contraseña'">
+            <ion-item>
+              <ion-label position="stacked">Contraseña Anterior</ion-label>
+              <ion-input [(ngModel)]="oldPassword" type="password" placeholder="Ingrese la contraseña actual"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Nueva Contraseña</ion-label>
+              <ion-input [(ngModel)]="newPassword" type="password" placeholder="Ingrese la nueva contraseña"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Confirmar Nueva Contraseña</ion-label>
+              <ion-input [(ngModel)]="confirmPassword" type="password" placeholder="Confirme la nueva contraseña"></ion-input>
+            </ion-item>
+          </div>
+  
+
+  
+          <ion-button expand="full" color="primary" (click)="saveChanges()">Guardar Cambios</ion-button>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  
+</ion-content>

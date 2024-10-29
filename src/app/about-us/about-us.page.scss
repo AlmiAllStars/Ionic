@@ -54,4 +54,18 @@
     text-align: center;
     padding-bottom: 30px;
   }
+
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  
+  .social-icons ion-button {
+    --color: #333;
+    --ion-color-primary: #333;
+    font-size: 1.4rem;
+  }
+  
   

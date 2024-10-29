@@ -560,6 +560,27 @@ body.dark .logout-button ion-item {
   --color: var(--ion-text-color);
 }
 
+.register-modal {
+  --border-radius: 15px;
+  --max-width: 90%;
+  --max-height: 70%;
+  --margin: auto;
+}
+
+.register-modal .modal-wrapper {
+  border-radius: 15px;
+  max-width: 400px;
+  max-height: 90%;
+  margin: auto;
+}
+
+.register-modal-content .modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
 
 
 

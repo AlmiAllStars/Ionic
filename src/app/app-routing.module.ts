@@ -29,7 +29,11 @@ const routes: Routes = [
   {
     path: 'control-panel',
     loadChildren: () => import('./control-panel/control-panel.module').then( m => m.ControlPanelPageModule)
+  },  {
+    path: 'cuenta',
+    loadChildren: () => import('./cuenta/cuenta.module').then( m => m.CuentaPageModule)
   }
+
 
 
 ];
