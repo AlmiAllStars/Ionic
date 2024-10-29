@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button slot="start" fill="clear" (click)="closePage()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+    <ion-title>Mis Pedidos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="buscarPedidos($event)" placeholder="Buscar por nombre de producto"></ion-searchbar>
+  <!-- Lista de pedidos -->
+  <ion-list>
+    <ion-item *ngFor="let pedido of pedidosFiltrados" (click)="abrirDetallePedido(pedido)">
+      <ion-thumbnail slot="start">
+        <img [src]="pedido.productos[0].imagen" alt="Imagen del producto">
+      </ion-thumbnail>
+      <ion-label>
+        <h2>Pedido #{{ pedido.id }}</h2>
+        <p>Fecha: {{ pedido.fecha | date: 'mediumDate' }}</p>
+        <p>Total: {{ pedido.total | currency }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Modal de Detalle de Pedido -->
+  <ion-modal [isOpen]="isDetalleModalOpen" (didDismiss)="closeDetalleModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-button slot="start" fill="clear" (click)="closeDetalleModal()">
+            <ion-icon name="close-outline"></ion-icon>
+          </ion-button>
+          <ion-title>Detalle del Pedido</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content *ngIf="pedidoSeleccionado">
+        <ion-list>
+          <ion-item *ngFor="let producto of pedidoSeleccionado.productos">
+            <ion-thumbnail slot="start">
+              <img [src]="producto.imagen" alt="Imagen del producto">
+            </ion-thumbnail>
+            <ion-label>
+              <h3>{{ producto.nombre }}</h3>
+              <p>Cantidad: {{ producto.cantidad }}</p>
+              <p>Precio: {{ producto.precio | currency }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+        <ion-item>
+          <ion-label>Total: {{ pedidoSeleccionado.total | currency }}</ion-label>
+        </ion-item>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

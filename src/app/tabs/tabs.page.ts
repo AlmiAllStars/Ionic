@@ -161,7 +161,6 @@ export class TabsPage implements OnInit {
   navigateToHome() {
     this.navController.navigateRoot('/tabs/productos');
   }
-
   openCart() {
     this.isCartOpen = true;
   }
@@ -278,5 +277,10 @@ async exitLoginModal() {
 async navigateToCuenta() {
   await this.exitLoginModal(); 
   this.navController.navigateForward('/cuenta');
+}
+
+async navigateToPedidos() {
+  await this.exitLoginModal();
+  this.navController.navigateForward('/pedidos');
 }
 }
