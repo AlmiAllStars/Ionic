@@ -36,6 +36,10 @@ const routes: Routes = [
   {
     path: 'pedidos',
     loadChildren: () => import('./pedidos/pedidos.module').then( m => m.PedidosPageModule)
+  },
+  {
+    path: 'tramitar',
+    loadChildren: () => import('./tramitar/tramitar.module').then( m => m.TramitarPageModule)
   }
 
 

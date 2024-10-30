@@ -1,9 +1,12 @@
 .section {
     margin-bottom: 2rem;
   }
+
+  ion-header {
+    margin-top: 65px;
+  }
   
   img {
-    border-radius: 0.5rem;
     object-fit: cover;
   }
   
@@ -61,4 +64,86 @@
   }
   
   
+  .recomendados-section {
+    margin-top: 16px;
+  }
   
+  .recomendado-card {
+    width: 93.5%;
+    text-align: center;
+  }
+  
+  .genero-section {
+    margin-top: 24px;
+  }
+  
+  .genero-carousel {
+    padding-top: 10px;
+  }
+  
+  .genero-card {
+    max-width: 120px; /* Ajuste del ancho para que quepan tres por pantalla */
+    text-align: center;
+  }
+
+  ion-card img{
+    margin: 0 auto;
+  }
+  /* Título de las categorías, similar a "Sugerencias para ti" */
+.genero-titulo {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 16px 0 8px;
+  padding-left: 8px;
+  color: #333;
+}
+
+/* Sección de Recomendados */
+.recomendados-section {
+  margin-top: 16px;
+}
+
+.recomendado-card {
+  width: 100%;
+  text-align: center;
+}
+
+/* Sección de Géneros */
+.genero-section {
+  margin-top: 24px;
+}
+
+.genero-carousel {
+  padding-top: 10px;
+}
+
+.genero-card {
+  max-width: 120px; /* Ajuste del ancho para que quepan tres por pantalla */
+  text-align: center;
+  height: 157px; /* Altura fija para todas las cards */
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+}
+
+ion-card-content {
+  padding: 0px;
+  padding-left: 6px; /* Añade un pequeño margen a la izquierda */
+  padding-right: 6px;
+}
+
+/* Estilo para el nombre de cada videojuego en las tarjetas */
+.nombre-videojuego {
+  font-size: 0.9em; /* Tamaño más pequeño */
+  font-weight: bold;
+  margin: 8px 0 4px;
+  text-align: left; /* Justificar a la izquierda */
+}
+
+/* Estilo para el PEGI, tamaño pequeño y centrado */
+.pegi-videojuego {
+  font-size: 0.7em;
+  color: #666;
+  text-align: left; /* Justificar a la izquierda */
+  margin-bottom: 4px;
+}

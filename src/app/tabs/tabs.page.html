@@ -66,11 +66,11 @@
           </div>
           <div *ngIf="cartItems && cartItems.length > 0">
             <div *ngFor="let item of cartItems" class="cart-item">
-              <img [src]="item.imagen" alt="{{ item.nombre }}" class="item-img">
+              <img [src]="item.picture" alt="{{ item.name }}" class="item-img">
               <div class="item-details">
-                <h3>{{ item.nombre }}</h3>
+                <h3>{{ item.name }}</h3>
                 <p>
-                  <span class="price">{{ item.precio | number:'1.2-2' }} €</span>
+                  <span class="price">{{ item.price | number:'1.2-2' }} €</span>
                   <span class="unit">/ud.</span>
                 </p>
               </div>
@@ -102,7 +102,7 @@
               
               <span class="total-amount">{{ total | currency:'EUR':'symbol':'1.2-2' }}</span>
             </div>
-            <ion-button expand="block" color="success">Tramitar pedido</ion-button>
+            <ion-button expand="block" color="success" (click)="navigateToTramitar()">Tramitar pedido</ion-button>
           </div>          
         </ion-content>
       </ng-template>

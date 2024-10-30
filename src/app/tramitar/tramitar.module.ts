@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AlquilerPageRoutingModule } from './alquiler-routing.module';
+import { TramitarPageRoutingModule } from './tramitar-routing.module';
 
-import { AlquilerPage } from './alquiler.page';
+import { TramitarPage } from './tramitar.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AlquilerPageRoutingModule
+    TramitarPageRoutingModule
   ],
-  declarations: [AlquilerPage]
+  declarations: [TramitarPage]
 })
-export class AlquilerPageModule {}
+export class TramitarPageModule {}

@@ -1,0 +1,85 @@
+ion-card.pedido-detalles,
+ion-card.pedido-resumen {
+  margin: 16px;
+  margin-top: 2px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+ion-card-header ion-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  padding: 12px 0;
+  text-align: center;
+}
+// hacemos que el primer buton de la pagina, solo el primero tenga el texto mas chiquito
+ion-buttons:first-child ion-button {
+  font-size: 0.7rem;
+  width: 100%;
+}
+
+
+ion-item {
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+  --inner-padding-top: 8px;
+  --inner-padding-bottom: 8px;
+}
+
+ion-item ion-label {
+  font-size: 1rem;
+  color: #666;
+}
+
+ion-select {
+  --placeholder-color: #888;
+  --color: #333;
+  --padding-start: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.comprar-container {
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.comprar-container {
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  ion-button {
+    width: 60%;
+    font-size: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  ion-item {
+    --padding-start: 12px;
+    --inner-padding-end: 12px;
+    --inner-padding-top: 8px;
+    --inner-padding-bottom: 8px;
+  }
+  
+  ion-item ion-label {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 6px; /* Espacio entre el label y el select */
+  }
+  
+  ion-select {
+    --padding-start: 6px;
+    --padding-top: 0;
+    --padding-bottom: 18px;
+    --placeholder-color: #888;
+    --color: #333;
+    text-align: center;
+  }
+  
+  

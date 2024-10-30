@@ -44,7 +44,7 @@ export class TabsPage implements OnInit {
     private modalController: ModalController,
     private toastController: ToastController,
     private autenticacionService: AutenticacionService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Suscribirse a los productos
@@ -84,12 +84,12 @@ export class TabsPage implements OnInit {
   }
 
   // Listen for the toggle check/uncheck to toggle the dark palette
-  toggleChange(ev : any) {
+  toggleChange(ev: any) {
     this.toggleDarkPalette(ev.detail.checked);
   }
 
   // Add or remove the "ion-palette-dark" class on the html element
-  toggleDarkPalette(shouldAdd : any) {
+  toggleDarkPalette(shouldAdd: any) {
     document.documentElement.classList.toggle('ion-palette-dark', shouldAdd);
   }
 
@@ -198,7 +198,7 @@ export class TabsPage implements OnInit {
   }
 
   calculateTotal() {
-    this.total = this.cartItems.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+    this.total = this.cartItems.reduce((acc, item) => acc + (item.price * item.cantidad), 0);
   }
 
   async showInfo() {
@@ -211,76 +211,86 @@ export class TabsPage implements OnInit {
   }
 
   isRegisterModalOpen = false;
-nombre: string = '';
-apellido: string = '';
-repassword: string = '';
+  nombre: string = '';
+  apellido: string = '';
+  repassword: string = '';
 
-openRegisterModal() {
-  this.closeLoginModal();
-  this.isRegisterModalOpen = true;
-}
-
-closeRegisterModal() {
-  this.isRegisterModalOpen = false;
-  this.nombre = '';
-  this.apellido = '';
-  this.email = '';
-  this.password = '';
-  this.repassword = '';
-}
-async loginWithGoogle() {
-  const response = await this.autenticacionService.loginWithGoogle();
-  if (response.success) {
-    this.isLoggedIn = true;
-    this.userName = response.usuario!.givenName;
-    this.userEmail = response.usuario!.email;
-    this.userPicture = response.usuario!.imageUrl;
-    this.showToast('Inicio de sesión con Google exitoso');
+  openRegisterModal() {
     this.closeLoginModal();
-  } else {
-    this.showToast(response.error!);
-  }
-}
-
-
-async registrar() {
-  if (!this.nombre || !this.apellido || !this.email || !this.password || !this.repassword) {
-    this.showToast('Por favor, completa todos los campos.');
-    return;
-  }
-  
-  if (this.password !== this.repassword) {
-    this.showToast('Las contraseñas no coinciden.');
-    return;
+    this.isRegisterModalOpen = true;
   }
 
-  this.autenticacionService.registrar(this.nombre, this.apellido, this.email, this.password).subscribe(response => {
+  closeRegisterModal() {
+    this.isRegisterModalOpen = false;
+    this.nombre = '';
+    this.apellido = '';
+    this.email = '';
+    this.password = '';
+    this.repassword = '';
+  }
+  async loginWithGoogle() {
+    const response = await this.autenticacionService.loginWithGoogle();
     if (response.success) {
       this.isLoggedIn = true;
-      this.userName = response.usuario.nombre + " " + response.usuario.apellido;
-      this.userEmail = response.usuario.email;
-      this.userPicture = response.usuario.imagen;
-      this.showToast('Registro exitoso');
-      this.closeRegisterModal();
+      this.userName = response.usuario!.givenName;
+      this.userEmail = response.usuario!.email;
+      this.userPicture = response.usuario!.imageUrl;
+      this.showToast('Inicio de sesión con Google exitoso');
+      this.closeLoginModal();
     } else {
-      this.showToast('Error al registrar');
+      this.showToast(response.error!);
     }
-  });
-}
-async exitLoginModal() {
-  this.isLoginModalOpen = false;
-  this.returningtoModal = true;
-  return new Promise(resolve => setTimeout(resolve, 300)); // Espera un breve periodo para que cierre completamente
-}
+  }
 
 
-async navigateToCuenta() {
-  await this.exitLoginModal(); 
-  this.navController.navigateForward('/cuenta');
-}
+  async registrar() {
+    if (!this.nombre || !this.apellido || !this.email || !this.password || !this.repassword) {
+      this.showToast('Por favor, completa todos los campos.');
+      return;
+    }
 
-async navigateToPedidos() {
-  await this.exitLoginModal();
-  this.navController.navigateForward('/pedidos');
-}
+    if (this.password !== this.repassword) {
+      this.showToast('Las contraseñas no coinciden.');
+      return;
+    }
+
+    this.autenticacionService.registrar(this.nombre, this.apellido, this.email, this.password).subscribe(response => {
+      if (response.success) {
+        this.isLoggedIn = true;
+        this.userName = response.usuario.nombre + " " + response.usuario.apellido;
+        this.userEmail = response.usuario.email;
+        this.userPicture = response.usuario.imagen;
+        this.showToast('Registro exitoso');
+        this.closeRegisterModal();
+      } else {
+        this.showToast('Error al registrar');
+      }
+    });
+  }
+  async exitLoginModal() {
+    this.isLoginModalOpen = false;
+    this.returningtoModal = true;
+    return new Promise(resolve => setTimeout(resolve, 300)); // Espera un breve periodo para que cierre completamente
+  }
+
+  async exitCarritoModal() {
+    this.isCartOpen = false;
+    return new Promise(resolve => setTimeout(resolve, 300)); // Espera un breve periodo para que cierre completamente
+  }
+
+
+  async navigateToCuenta() {
+    await this.exitLoginModal();
+    this.navController.navigateForward('/cuenta');
+  }
+
+  async navigateToPedidos() {
+    await this.exitLoginModal();
+    this.navController.navigateForward('/pedidos');
+  }
+
+  async navigateToTramitar() {
+    await this.exitCarritoModal();
+    this.navController.navigateForward('/tramitar');
+  }
 }

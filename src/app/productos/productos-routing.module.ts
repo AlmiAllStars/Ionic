@@ -8,18 +8,6 @@ const routes: Routes = [
     component: ProductosPage,
     children: [
       {
-        path: 'venta',
-        loadChildren: () => import('./venta/venta.module').then(m => m.VentaPageModule)
-      },
-      {
-        path: 'alquiler',
-        loadChildren: () => import('./alquiler/alquiler.module').then(m => m.AlquilerPageModule)
-      },
-      {
-        path: 'reparaciones',
-        loadChildren: () => import('./reparaciones/reparaciones.module').then(m => m.ReparacionesPageModule)
-      },
-      {
         path: '',
         redirectTo: 'venta',
         pathMatch: 'full'

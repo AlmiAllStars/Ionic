@@ -1,83 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-segment scrollable value="videojuegos">
+      <ion-segment-button value="videojuegos" (click)="cargarPagina('videojuegos')">Videojuegos</ion-segment-button>
+      <ion-segment-button value="consolas" (click)="cargarPagina('consolas')">Consolas</ion-segment-button>
+      <ion-segment-button value="devices" (click)="cargarPagina('devices')">Devices</ion-segment-button>
+      <ion-segment-button value="reparaciones" (click)="cargarPagina('reparaciones')">Reparaciones</ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
 
-<ion-content class="ion-padding"  fullscreen="false">
-  <div class="w-full bg-gray-100 text-black py-2">
-    <div class="flex justify-around items-center">
-      <button class="focus:outline-none px-4"  (click)="scrollToSection('productos')">
-        <span *ngIf="tabs==1" class="text-base font-semibold text-orange-500">Games</span>
-        <span *ngIf="tabs!=1" class="text-base font-semibold text-gray-600">Games</span>
-        <div *ngIf="tabs==1" class="h-1 w-full bg-orange-500 mt-1"></div>
-      </button>
-      <button class="focus:outline-none px-4"  (click)="scrollToSection('alquileres')" >
-        <span *ngIf="tabs==2" class="text-base font-semibold text-orange-500">Consoles</span>
-        <span *ngIf="tabs!=2" class="text-base font-semibold text-gray-600">Consoles</span>
-        <div *ngIf="tabs==2" class="h-1 w-full bg-orange-500 mt-1"></div>
-      </button>
-      <button class="focus:outline-none px-4" (click)="scrollToSection('reparaciones')">
-        <span *ngIf="tabs==3" class="text-base font-semibold text-orange-500">Devices</span>
-        <span *ngIf="tabs!=3" class="text-base font-semibold text-gray-600">Devices</span>
-        <div *ngIf="tabs==3" class="h-1 w-full bg-orange-500 mt-1"></div>
-      </button>
-    </div>
+<ion-content>
+  <!-- Contenido de la página, incluyendo carruseles de recomendados y géneros -->
+  <div class="recomendados-section">
+    <swiper-container loop="true"  slides-per-view="1" class="recomendados-carousel">
+      <swiper-slide *ngFor="let recomendado of recomendados">
+        <ion-card>
+          <img [src]="recomendado.picture" alt="Recomendado" />
+          <ion-card-content>
+            <h2>{{ recomendado.name }}</h2>
+            <p>{{ recomendado.description }}</p>
+          </ion-card-content>
+        </ion-card>
+      </swiper-slide>
+    </swiper-container>
   </div>
-  
-  <!-- Contenedor con desplazamiento horizontal -->
-  <div #contentContainer (scroll)="onScroll($event)"   class="w-full overflow-x-auto flex snap-x snap-mandatory" id="contentContainer">
-    <!-- Sección de Productos -->
-    <section id="productos" class="w-full h-screen flex-shrink-0 snap-start bg-white p-0">
-      <div class="w-full p-4 bg-gray-50">
-        <!-- Tarjeta con el logo -->
-        <div class="w-full h-67 bg-white rounded-lg shadow-lg mb-6 overflow-hidden">
-          <img src="../../assets/icon/LogoJuegalmi.png" alt="Logo" class="w-full h-full object-cover">
-        </div>
-      
-        <!-- Sección de Video Games -->
-        <div class="mb-6">
-          <h2 class="text-xl font-bold text-orange-500 mb-4">Video Games</h2>
-          <div class="grid grid-cols-3 gap-4">
-            <div *ngFor="let game of videoGames" class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
-              <img [src]="game.imageUrl" alt="{{ game.title }}" class="w-full h-24 object-cover rounded-md mb-2">
-              <h3 class="text-sm text-center font-semibold">{{ game.title }}</h3>
-            </div>
-          </div>
-        </div>
-      
-        <!-- Sección de Products -->
-        <div>
-          <h2 class="text-xl font-bold text-orange-500 mb-4">Products</h2>
-          <div class="grid grid-cols-3 gap-4">
-            <div *ngFor="let product of products" class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
-              <img [src]="product.imageUrl" alt="{{ product.title }}" class="w-full h-24 object-cover rounded-md mb-2">
-              <h3 class="text-sm text-center font-semibold">{{ product.title }}</h3>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      
-    </section>
 
-    <!-- Sección de Alquileres -->
-    <section id="alquileres" class="w-full h-screen flex-shrink-0 snap-start bg-gray-100 p-4">
-      <h2 class="text-2xl font-bold mb-4">Alquileres</h2>
-      <div class="grid grid-cols-2 gap-4">
-        <div *ngFor="let rental of rentals" class="p-4 bg-gray-200 rounded-lg shadow-md">
-          <img [src]="imageUrl" alt="{{ rental.title }}" class="w-full h-32 object-cover rounded-md">
-          <h3 class="mt-2 text-lg">{{ rental.title }}</h3>
-          <p class="text-gray-500">{{ rental.price | currency }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Sección de Reparaciones -->
-    <section id="reparaciones" class="w-full h-screen flex-shrink-0 snap-start bg-white p-4">
-      <h2 class="text-2xl font-bold mb-4">Reparaciones</h2>
-      <div class="grid grid-cols-2 gap-4">
-        <div *ngFor="let repair of repairs" class="p-4 bg-gray-200 rounded-lg shadow-md">
-          <img [src]="imageUrl" alt="{{ repair.title }}" class="w-full h-32 object-cover rounded-md">
-          <h3 class="mt-2 text-lg">{{ repair.title }}</h3>
-          <p class="text-gray-500">{{ repair.price | currency }}</p>
-        </div>
-      </div>
-    </section>
+  <div *ngFor="let genero of generos" class="genero-section">
+    <h2 class="genero-titulo">{{ genero.nombre }}</h2>
+    <swiper-container loop="true"  slides-per-view="3"  class="genero-carousel">
+      <swiper-slide *ngFor="let item of genero.items">
+        <ion-card class="genero-card">
+          <img [src]="item.picture" alt="Item" />
+          <ion-card-content>
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.description }}</p>
+            <p class="pegi-videojuego">PEGI: {{ item.pegi }}</p>
+          </ion-card-content>
+        </ion-card>
+      </swiper-slide>
+    </swiper-container>
   </div>
+</ion-content>
+
+<!-- Alternativa de carga para cuando no hay datos aún -->
+<ion-content *ngIf="generos.length === 0 || recomendados.length === 0">
+  <ion-spinner name="crescent"></ion-spinner>
+  <p>Cargando datos...</p>
 </ion-content>

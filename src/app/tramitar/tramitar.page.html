@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="cancelar()">Cancelar</ion-button>
+    </ion-buttons>
+    <ion-title>Tramitar Pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Botón Comprar Ahora en la parte superior -->
+  <div class="comprar-container">
+    <ion-button expand="block" color="success" (click)="comprarAhora()">
+      Comprar Ahora
+    </ion-button>
+  </div>
+
+  <ion-card class="pedido-detalles">
+    <ion-card-header>
+      <ion-card-title>Detalles del Pedido</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- Datos del Comprador -->
+      <ion-item>
+        <ion-label position="floating">Nombre del Comprador</ion-label>
+        <ion-input type="text" [(ngModel)]="usuario.nombre" readonly></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Teléfono</ion-label>
+        <ion-input type="tel" [(ngModel)]="usuario.telefono" readonly></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Correo Electrónico</ion-label>
+        <ion-input type="email" [(ngModel)]="usuario.email" readonly></ion-input>
+      </ion-item>
+
+      <!-- Dirección de Envío -->
+      <ion-item>
+        <ion-label position="stacked">Dirección de Envío</ion-label>
+        <ion-select [(ngModel)]="shippingOption" placeholder="Selecciona una opción" interface="popover">
+          <ion-select-option value="userAddress">{{ usuario.direccion }}</ion-select-option>
+          <ion-select-option value="newAddress">Nueva Dirección</ion-select-option>
+          <ion-select-option value="storePickup">Recoger en Tienda</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="shippingOption === 'newAddress'">
+        <ion-label position="stacked">Nueva Dirección</ion-label>
+        <ion-input type="text"></ion-input>
+      </ion-item>
+
+      <!-- Selección de Tienda cuando es "Recoger en Tienda" -->
+      <ion-item *ngIf="shippingOption === 'storePickup'">
+        <ion-label position="stacked">Selecciona una Tienda</ion-label>
+        <ion-select [(ngModel)]="selectedStore" placeholder="Elige una tienda" interface="popover">
+          <ion-select-option *ngFor="let tienda of tiendas" [value]="tienda.nombre">{{ tienda.nombre }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Método de Pago -->
+      <ion-item>
+        <ion-label position="stacked">Método de Pago</ion-label>
+        <ion-select placeholder="Selecciona un método" interface="popover">
+          <ion-select-option value="creditCard">Tarjeta de Crédito</ion-select-option>
+          <ion-select-option value="paypal">PayPal</ion-select-option>
+          <ion-select-option value="bankTransfer">Transferencia Bancaria</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Resumen del Pedido -->
+  <ion-card class="pedido-resumen">
+    <ion-card-header>
+      <ion-card-title>Resumen del Pedido</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Precio sin IVA</ion-label>
+        <ion-text>{{ totalSinIVA | currency }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Precio Envío</ion-label>
+        <ion-text>{{ shippingOption === 'storePickup' ? 0 : shippingCost | currency }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Precio Total</ion-label>
+        <ion-text>{{ totalConEnvio | currency }}</ion-text>
+      </ion-item>
+      <ion-item *ngIf="shippingOption !== 'storePickup'">
+        <ion-label>Llegará el día</ion-label>
+        <ion-text>{{ estimatedArrival }}</ion-text>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Botón Comprar Ahora en la parte inferior -->
+  <div class="comprar-container">
+    <ion-button expand="block" color="success" (click)="comprarAhora()">
+      Comprar Ahora
+    </ion-button>
+  </div>
+</ion-content>
