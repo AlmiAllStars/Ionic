@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ producto?.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <img [src]="'../../assets/gallery/public/' + producto?.picture" alt="{{ producto?.name }}" />
+    <ion-card-content>
+      <h2>{{ producto?.name }}</h2>
+      <p>{{ producto?.description }}</p>
+      <p><strong>Precio:</strong> {{ producto?.price | currency }}</p>
+      <p><strong>Géneros:</strong> {{ producto?.genres?.join(', ') || 'No genres' }}</p>
+      <p><strong>PEGI:</strong> {{ producto?.pegi }}</p>
+      <p><strong>Fecha de lanzamiento:</strong> {{ producto?.release_date | date }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Botones de Acción -->
+  <div class="action-buttons">
+    <ion-button expand="block" color="primary" (click)="anadirAlCarrito()">Añadir al carrito</ion-button>
+    <ion-button expand="block" color="secondary" (click)="alquilar()">Alquilar</ion-button>
+  </div>
+</ion-content>

@@ -8,7 +8,7 @@ import { Producto } from '../models/producto';
 })
 export class CarritoService {
   private cartSubject = new BehaviorSubject<CarritoItem[]>([
-    { id: 1, name: 'Game 1', description: 'Un videojuego emocionante', price: 3.15, cantidad: 1, picture: '../../assets/sample-image.jpg' }
+   
   ]);
   public cart$: Observable<CarritoItem[]> = this.cartSubject.asObservable();
 

@@ -10,40 +10,53 @@
 </ion-header>
 
 <ion-content>
-  <!-- Contenido de la página, incluyendo carruseles de recomendados y géneros -->
-  <div class="recomendados-section">
-    <swiper-container loop="true"  slides-per-view="1" class="recomendados-carousel">
-      <swiper-slide *ngFor="let recomendado of recomendados">
-        <ion-card>
-          <img [src]="recomendado.picture" alt="Recomendado" />
+
+  <!-- Campo de búsqueda -->
+  <ion-searchbar placeholder="Buscar videojuegos..." (ionInput)="buscar($event)"></ion-searchbar>
+
+  <!-- Resultados de búsqueda -->
+  <div *ngIf="resultadosBusqueda.length > 0">
+    <div *ngIf="resultadosBusqueda.length > 0">
+      <div class="resultados-busqueda">
+        <ion-card *ngFor="let resultado of resultadosBusqueda" class="resultado-item"  (click)="verDetalles(resultado)">
+          <img [src]="'../../assets/gallery/public/' + resultado.picture" alt="Resultado" />
           <ion-card-content>
-            <h2>{{ recomendado.name }}</h2>
-            <p>{{ recomendado.description }}</p>
+            <h3>{{ truncateText(resultado.name, 30) }}</h3>
+            <p>{{ resultado.genres && resultado.genres.length > 0 ? resultado.genres.join(', ') : 'No genres' }}</p>
           </ion-card-content>
         </ion-card>
-      </swiper-slide>
-    </swiper-container>
+      </div>
+    </div>
   </div>
 
-  <div *ngFor="let genero of generos" class="genero-section">
-    <h2 class="genero-titulo">{{ genero.nombre }}</h2>
-    <swiper-container loop="true"  slides-per-view="3"  class="genero-carousel">
-      <swiper-slide *ngFor="let item of genero.items">
-        <ion-card class="genero-card">
-          <img [src]="item.picture" alt="Item" />
-          <ion-card-content>
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.description }}</p>
-            <p class="pegi-videojuego">PEGI: {{ item.pegi }}</p>
-          </ion-card-content>
-        </ion-card>
-      </swiper-slide>
-    </swiper-container>
-  </div>
-</ion-content>
+  <!-- Contenido original solo si no hay resultados de búsqueda -->
+  <ng-container *ngIf="resultadosBusqueda.length === 0">
+    <div class="recomendados-section">
+      <swiper-container loop="true" slides-per-view="1" class="recomendados-carousel">
+        <swiper-slide *ngFor="let recomendado of recomendados">
+          <ion-card (click)="verDetalles(recomendado)">
+            <img [src]="'../../assets/gallery/public/' + recomendado.picture" alt="Recomendado" />
+            <ion-card-content>
+              <h2>{{ recomendado.name }}</h2>
+              <p>{{ truncateText(recomendado.description, 110) }}</p>
+            </ion-card-content>
+          </ion-card>
+        </swiper-slide>
+      </swiper-container>
+    </div>
 
-<!-- Alternativa de carga para cuando no hay datos aún -->
-<ion-content *ngIf="generos.length === 0 || recomendados.length === 0">
-  <ion-spinner name="crescent"></ion-spinner>
-  <p>Cargando datos...</p>
+    <div *ngFor="let genero of generos" class="genero-section">
+      <h2 class="genero-titulo">{{ genero.nombre }}</h2>
+      <swiper-container loop="true" slides-per-view="3" class="genero-carousel">
+        <swiper-slide *ngFor="let item of genero.items">
+          <ion-card class="genero-card" (click)="verDetalles(item)">
+            <img [src]="'../../assets/gallery/public/' + item.picture" alt="Item" />
+            <ion-card-content>
+              <h3>{{ truncateText(item.name, 30) }}</h3>
+            </ion-card-content>
+          </ion-card>
+        </swiper-slide>
+      </swiper-container>
+    </div>
+  </ng-container>
 </ion-content>

@@ -70,9 +70,7 @@ export class TabsPage implements OnInit {
 
   ionViewWillEnter() {
     this.verificarSesion();
-    console.log('Returning to modal:', this.userName);
     if (this.returningtoModal) {
-      console.log('Returning to modal:', this.autenticacionService.obtenerUsuario());
       this.isLoginModalOpen = true; // Abre el modal si returningtoModal es true
       this.returningtoModal = false; // Restablece returningtoModal a false
     }
@@ -117,7 +115,6 @@ export class TabsPage implements OnInit {
         this.showToast(response.error || 'Error al iniciar sesión');
       }
     } catch (error) {
-      console.error('Error en el login:', error);
       this.showToast('Ocurrió un error al iniciar sesión');
     }
   }

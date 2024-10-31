@@ -21,7 +21,7 @@ export class ProductoService {
         // Asegurar que todos los videojuegos tengan un array de géneros
         const videojuegosConGeneros = videojuegos.map(videojuego => ({
           ...videojuego,
-          generos: videojuego.genres || [] // Si `generos` está ausente, se asigna un array vacío
+          genres: videojuego.genres || [] // Si `generos` está ausente, se asigna un array vacío
         }));
         
         this.productsSubject.next(videojuegosConGeneros);

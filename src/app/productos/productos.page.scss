@@ -3,7 +3,7 @@
   }
 
   ion-header {
-    margin-top: 65px;
+    margin-top: 50px;
   }
   
   img {
@@ -59,22 +59,10 @@
     --ion-color-tint: var(--ion-color-menu-tint);
   }
 
-  ion-content {
-    --padding-top: 80px; /* O el tamaño de tu header */
-  }
-  
-  
-  .recomendados-section {
-    margin-top: 16px;
-  }
   
   .recomendado-card {
     width: 93.5%;
     text-align: center;
-  }
-  
-  .genero-section {
-    margin-top: 24px;
   }
   
   .genero-carousel {
@@ -98,20 +86,12 @@
   color: #333;
 }
 
-/* Sección de Recomendados */
-.recomendados-section {
-  margin-top: 16px;
-}
-
 .recomendado-card {
   width: 100%;
   text-align: center;
 }
 
-/* Sección de Géneros */
-.genero-section {
-  margin-top: 24px;
-}
+
 
 .genero-carousel {
   padding-top: 10px;
@@ -120,7 +100,7 @@
 .genero-card {
   max-width: 120px; /* Ajuste del ancho para que quepan tres por pantalla */
   text-align: center;
-  height: 157px; /* Altura fija para todas las cards */
+  height: 177px; /* Altura fija para todas las cards */
   display: flex;
   flex-direction: column;
   justify-content: left;
@@ -146,4 +126,25 @@ ion-card-content {
   color: #666;
   text-align: left; /* Justificar a la izquierda */
   margin-bottom: 4px;
+}
+
+.resultados-busqueda {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+  gap: 16px; /* Espacio entre las tarjetas */
+  margin-right: 35px;
+}
+
+.resultado-item {
+  width: 100%;
+}
+
+.small-modal .modal-wrapper {
+  --width: 80%;
+  --height: 60%;
+  max-height: 400px;
+  max-width: 600px;
+  margin: auto;
+  border-radius: 12px;
+  overflow: hidden;
 }

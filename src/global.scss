@@ -36,6 +36,24 @@
   padding: 25px;
 }
 
+.small-modal .modal-wrapper {
+  width: 80% !important;
+  height: 60% !important;
+  max-width: 600px !important;
+  max-height: 400px !important;
+  margin: auto !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  --border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  .small-modal .modal-wrapper {
+    width: 90% !important;
+    height: 50% !important;
+  }
+}
+
 
 /**
  * Ionic Dark Mode
