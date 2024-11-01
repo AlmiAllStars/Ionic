@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ProductoService } from '../services/producto.service';
 import { Videojuego } from '../models/videojuego';
 import { ModalController } from '@ionic/angular';
@@ -13,6 +13,9 @@ export class ProductosPage implements OnInit {
   recomendados: Videojuego[] = [];
   generos: { nombre: string; items: Videojuego[] }[] = [];
   resultadosBusqueda: Videojuego[] = []; // Propiedad para almacenar resultados de búsqueda
+  underlineTransform = 'translateX(0)'; // Transformación inicial de la barra azul
+  isScrolled = false; // Estado para controlar si el menú está oculto
+  lastScrollTop = 0; // Para registrar la última posición de scroll
 
   constructor(private productoService: ProductoService, private modalController: ModalController) {}
 
@@ -68,8 +71,40 @@ export class ProductosPage implements OnInit {
     }
   }
 
-  cargarPagina(pagina: string) {
-    console.log('Cargando página:', pagina);
+  cargarPagina(event: any) {
+    const value = event.detail.value;
+    const index = this.getSegmentIndex(value);
+    this.underlineTransform = `translateX(${index * 25}%)`; // Ajusta el porcentaje según el ancho de los botones
+    // Lógica para cargar la página correspondiente
+  }
+
+  getSegmentIndex(value: string): number {
+    switch (value) {
+      case 'videojuegos':
+        return 0;
+      case 'consolas':
+        return 1;
+      case 'devices':
+        return 2;
+      case 'reparaciones':
+        return 3;
+      default:
+        return 0;
+    }
+  }
+
+  // Detecta el scroll y oculta/muestra el menú según la dirección
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (currentScrollTop > this.lastScrollTop) {
+      // Scrolling down
+      this.isScrolled = true;
+    } else {
+      // Scrolling up
+      this.isScrolled = false;
+    }
+    this.lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
   }
 
   

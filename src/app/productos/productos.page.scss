@@ -148,3 +148,63 @@ ion-card-content {
   border-radius: 12px;
   overflow: hidden;
 }
+ion-header {
+  transition: top 0.3s ease-in-out;
+}
+
+ion-toolbar.scrollable-toolbar {
+  overflow-x: auto;
+  white-space: nowrap;
+  position: relative;
+}
+
+/* Ajusta la altura del ion-toolbar en dispositivos que no sean iOS */
+@media not all and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
+  ion-toolbar.scrollable-toolbar {
+    height: 56px !important; /* Asegura la altura del toolbar */
+  }
+
+
+  ion-segment-button {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    height: 100% !important; /* Asegura que los botones ocupen toda la altura del segmento */
+    display: flex !important;
+    align-items: center !important; /* Centra el texto verticalmente en el botón */
+    font-size: 0.9em; /* Opcional: reduce un poco el tamaño de fuente */
+  }
+}
+
+
+.custom-segment {
+  --indicator-color: transparent;
+}
+
+ion-segment-button {
+  color: black;
+  font-weight: bold;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 25%;
+  background-color: #007bff; /* Color de la barra azul */
+  transition: transform 0.3s ease-in-out;
+}
+
+ion-header.scrolled {
+  top: -60px; /* Ajusta la altura según el tamaño de tu header */
+}
+
+.custom-segment-button {
+  padding-bottom: 8px;
+}
+
+.custom-segment-button.selected {
+  color: #007bff; /* Color del botón seleccionado */
+}

@@ -47,10 +47,6 @@ export class TabsPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Suscribirse a los productos
-    this.productoService.products$.subscribe(products => {
-      this.products = products;
-    });
 
     // Suscribirse a las notificaciones
     this.notificacionService.notifications$.subscribe(notifications => {

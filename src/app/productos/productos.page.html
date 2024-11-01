@@ -1,11 +1,12 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-segment scrollable value="videojuegos">
-      <ion-segment-button value="videojuegos" (click)="cargarPagina('videojuegos')">Videojuegos</ion-segment-button>
-      <ion-segment-button value="consolas" (click)="cargarPagina('consolas')">Consolas</ion-segment-button>
-      <ion-segment-button value="devices" (click)="cargarPagina('devices')">Devices</ion-segment-button>
-      <ion-segment-button value="reparaciones" (click)="cargarPagina('reparaciones')">Reparaciones</ion-segment-button>
+<ion-header [class.scrolled]="isScrolled">
+  <ion-toolbar class="scrollable-toolbar">
+    <ion-segment scrollable value="videojuegos" class="custom-segment" (ionChange)="cargarPagina($event)">
+      <ion-segment-button value="videojuegos">Videojuegos</ion-segment-button>
+      <ion-segment-button value="consolas">Consolas</ion-segment-button>
+      <ion-segment-button value="devices">Devices</ion-segment-button>
+      <ion-segment-button value="reparaciones">Reparaciones</ion-segment-button>
     </ion-segment>
+
   </ion-toolbar>
 </ion-header>
 
