@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/productos"></ion-back-button>
+    </ion-buttons>
+    <ion-title #gameTitle class="game-title">
+      <div *ngIf="producto.name.length < 15">{{ producto.name }}</div>
+      <div *ngIf="producto.name.length >= 15" class="scrolling-text">{{ producto.name }}</div>
+    </ion-title>    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="product-container">
+    <!-- Imagen del producto -->
+    <div class="product-image">
+      <img [src]="'../../assets/gallery/public/' + producto.picture" alt="{{ producto.name }}" />
+    </div>
+
+    <!-- Descripción y detalles -->
+    <div class="product-details">
+      <!-- Descripción del producto -->
+      <p class="product-description">{{ producto.description }}</p>
+
+      <!-- Secciones de información y compra -->
+      <div class="info-purchase-container">
+        <!-- Información del juego -->
+        <div class="game-info">
+          <p><strong>Plataforma:</strong></p>
+          <p>Nintendo</p>
+        
+          <p><strong>Géneros:</strong></p>
+          <ng-container *ngFor="let genre of producto.genres">
+            <p>{{ genre }}</p>
+          </ng-container>
+        
+          <p><strong>PEGI:</strong></p>
+          <a href="https://pegi.info/" target="_blank">
+            <img [src]="'../../assets/pegi/' + producto.pegi + '.png'" alt="PEGI {{ producto.pegi }}" />
+          </a>
+        
+          <p><strong>Fecha lanzamiento:</strong></p>
+          <p>{{ producto.release_date | date }}</p>
+        </div>
+
+        <div class="purchase-options">
+          <!-- Primera línea: Buy Section -->
+          <div class="buy-section">
+            <div class="price-container">
+              <div class="price-label">
+                <span>Comprar</span>
+              </div>
+              <div class="price">
+                <span class="whole">{{ wholePrice }}</span>
+                <span class="fraction">{{ fractionPrice }}€</span>
+              </div>
+            </div>
+            <ion-button color="success" (click)="anadirAlCarrito()">
+              <ion-icon name="cart"></ion-icon>
+            </ion-button>
+          </div>
+        
+          <!-- Segunda línea: Try Section -->
+          <div class="try-section">
+            <div class="price-container">
+              <div class="try-label">
+                <span>Pruebalo</span>
+              </div>
+              <div class="tryPrice">
+                <span class="tryWhole">5</span>
+                <span class="tryFraction">€/semana</span>
+              </div>
+            </div>
+            <ion-button color="tertiary" (click)="alquilar()">
+              <ion-icon name="time-outline"></ion-icon>
+            </ion-button>
+          </div>
+        
+          <!-- Tercera línea: Notify Section -->
+          <div class="notify-section">
+            <ion-button color="danger">
+              <ion-icon name="heart"></ion-icon>
+            </ion-button>            
+          </div>
+        </div>
+            
+      </div>
+    </div>
+  </div>
+</ion-content>

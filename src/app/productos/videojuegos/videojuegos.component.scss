@@ -1,0 +1,76 @@
+.recomendados-section {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .recomendado-card {
+    width: 93.5%;
+    text-align: center;
+  }
+  
+  .genero-carousel {
+    padding-top: 10px;
+  }
+  
+  .genero-card {
+    max-width: 120px;
+    text-align: center;
+    height: 187px;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+  }
+  
+  .genero-titulo {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 16px 0 8px;
+    padding-left: 8px;
+    color: #333;
+  }
+  
+  ion-card img {
+    margin: 0 auto;
+  }
+  
+  .nombre-videojuego {
+    font-size: 0.9em;
+    font-weight: bold;
+    margin: 8px 0 4px;
+    text-align: left;
+  }
+  
+  .pegi-videojuego {
+    font-size: 0.7em;
+    color: #666;
+    text-align: left;
+    margin-bottom: 4px;
+  }
+  
+  .resultados-busqueda {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-right: 35px;
+  }
+  
+  .resultado-item {
+    width: 100%;
+  }
+  
+  .small-modal .modal-wrapper {
+    --width: 80%;
+    --height: 60%;
+    max-height: 400px;
+    max-width: 600px;
+    margin: auto;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  ion-card-content {
+    padding: 0px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  

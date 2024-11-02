@@ -1,155 +1,9 @@
 .section {
-    margin-bottom: 2rem;
-  }
-
-  ion-header {
-    margin-top: 50px;
-  }
-  
-  img {
-    object-fit: cover;
-  }
-  
-  button {
-    background-color: transparent;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s;
-  }
-  
-  button:hover {
-    color: #f9a825;
-  }
-
-  section { 
-    padding-top: 320px; 
-    margin-top: -300px;
-   
-  }
-  .app-title {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-  }
-  
-  /* Estilo para el ion-avatar que mostrará el perfil */
-  ion-avatar img {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    margin-top: 10px;
-  }
-  :root {
-    --ion-color-menu: #9fffff;
-    --ion-color-menu-rgb: 159,255,255;
-    --ion-color-menu-contrast: #000000;
-    --ion-color-menu-contrast-rgb: 0,0,0;
-    --ion-color-menu-shade: #8ce0e0;
-    --ion-color-menu-tint: #a9ffff;
-  }
-  
-  .ion-color-menu {
-    --ion-color-base: var(--ion-color-menu);
-    --ion-color-base-rgb: var(--ion-color-menu-rgb);
-    --ion-color-contrast: var(--ion-color-menu-contrast);
-    --ion-color-contrast-rgb: var(--ion-color-menu-contrast-rgb);
-    --ion-color-shade: var(--ion-color-menu-shade);
-    --ion-color-tint: var(--ion-color-menu-tint);
-  }
-
-  
-  .recomendado-card {
-    width: 93.5%;
-    text-align: center;
-  }
-  
-  .genero-carousel {
-    padding-top: 10px;
-  }
-  
-  .genero-card {
-    max-width: 120px; /* Ajuste del ancho para que quepan tres por pantalla */
-    text-align: center;
-  }
-
-  ion-card img{
-    margin: 0 auto;
-  }
-  /* Título de las categorías, similar a "Sugerencias para ti" */
-.genero-titulo {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin: 16px 0 8px;
-  padding-left: 8px;
-  color: #333;
+  margin-bottom: 2rem;
 }
 
-.recomendado-card {
-  width: 100%;
-  text-align: center;
-}
-
-
-
-.genero-carousel {
-  padding-top: 10px;
-}
-
-.genero-card {
-  max-width: 120px; /* Ajuste del ancho para que quepan tres por pantalla */
-  text-align: center;
-  height: 177px; /* Altura fija para todas las cards */
-  display: flex;
-  flex-direction: column;
-  justify-content: left;
-}
-
-ion-card-content {
-  padding: 0px;
-  padding-left: 6px; /* Añade un pequeño margen a la izquierda */
-  padding-right: 6px;
-}
-
-/* Estilo para el nombre de cada videojuego en las tarjetas */
-.nombre-videojuego {
-  font-size: 0.9em; /* Tamaño más pequeño */
-  font-weight: bold;
-  margin: 8px 0 4px;
-  text-align: left; /* Justificar a la izquierda */
-}
-
-/* Estilo para el PEGI, tamaño pequeño y centrado */
-.pegi-videojuego {
-  font-size: 0.7em;
-  color: #666;
-  text-align: left; /* Justificar a la izquierda */
-  margin-bottom: 4px;
-}
-
-.resultados-busqueda {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Dos columnas */
-  gap: 16px; /* Espacio entre las tarjetas */
-  margin-right: 35px;
-}
-
-.resultado-item {
-  width: 100%;
-}
-
-.small-modal .modal-wrapper {
-  --width: 80%;
-  --height: 60%;
-  max-height: 400px;
-  max-width: 600px;
-  margin: auto;
-  border-radius: 12px;
-  overflow: hidden;
-}
 ion-header {
-  transition: top 0.3s ease-in-out;
+  margin-top: 50px;
 }
 
 ion-toolbar.scrollable-toolbar {
@@ -158,23 +12,21 @@ ion-toolbar.scrollable-toolbar {
   position: relative;
 }
 
-/* Ajusta la altura del ion-toolbar en dispositivos que no sean iOS */
-@media not all and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
-  ion-toolbar.scrollable-toolbar {
-    height: 56px !important; /* Asegura la altura del toolbar */
-  }
-
-
-  ion-segment-button {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    height: 100% !important; /* Asegura que los botones ocupen toda la altura del segmento */
-    display: flex !important;
-    align-items: center !important; /* Centra el texto verticalmente en el botón */
-    font-size: 0.9em; /* Opcional: reduce un poco el tamaño de fuente */
-  }
+img {
+  object-fit: cover;
 }
 
+button {
+  background-color: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+button:hover {
+  color: #f9a825;
+}
 
 .custom-segment {
   --indicator-color: transparent;
@@ -193,18 +45,24 @@ ion-segment-button {
   left: 0;
   height: 3px;
   width: 25%;
-  background-color: #007bff; /* Color de la barra azul */
+  background-color: #007bff;
   transition: transform 0.3s ease-in-out;
 }
 
 ion-header.scrolled {
-  top: -60px; /* Ajusta la altura según el tamaño de tu header */
+  top: -60px;
 }
 
-.custom-segment-button {
-  padding-bottom: 8px;
-}
-
-.custom-segment-button.selected {
-  color: #007bff; /* Color del botón seleccionado */
+@media not all and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
+  ion-toolbar.scrollable-toolbar {
+    height: 56px !important;
+  }
+  ion-segment-button {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    font-size: 0.9em;
+  }
 }

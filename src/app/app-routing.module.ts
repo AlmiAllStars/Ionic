@@ -40,6 +40,10 @@ const routes: Routes = [
   {
     path: 'tramitar',
     loadChildren: () => import('./tramitar/tramitar.module').then( m => m.TramitarPageModule)
+  },
+  {
+    path: 'detalle',
+    loadChildren: () => import('./detalle/detalle.module').then( m => m.DetallePageModule)
   }
 
 

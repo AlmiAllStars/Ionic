@@ -24,6 +24,10 @@ const routes: Routes = [
         loadChildren: () => import('../tiendas/tiendas.module').then(m => m.TiendasPageModule)
       },
       {
+        path: 'detalle', // Agrega la página de detalle como una ruta hija
+        loadChildren: () => import('../detalle/detalle.module').then(m => m.DetallePageModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/productos',
         pathMatch: 'full'
