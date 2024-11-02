@@ -10,4 +10,5 @@ export interface Dispositivo extends Producto {
   camera?: string;     // Características de la cámara
   battery?: number;    // Capacidad de la batería en mAh
   disk?: number;       // Capacidad de almacenamiento en GB
+  quantity: number;    // Cantidad disponible en stock
 }

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/productos"></ion-back-button>
+      <ion-back-button defaultHref="" (click)="volver()"></ion-back-button>
     </ion-buttons>
     <ion-title #gameTitle class="game-title">
       <div *ngIf="producto.name.length < 15">{{ producto.name }}</div>
@@ -26,21 +26,72 @@
       <div class="info-purchase-container">
         <!-- Información del juego -->
         <div class="game-info">
-          <p><strong>Plataforma:</strong></p>
-          <p>Nintendo</p>
-        
-          <p><strong>Géneros:</strong></p>
-          <ng-container *ngFor="let genre of producto.genres">
-            <p>{{ genre }}</p>
+          <!-- Información específica de Videojuego -->
+          <ng-container *ngIf="tipoProducto === 'videojuego'">
+            <p><strong>Plataforma:</strong></p>
+            <p>Nintendo</p>
+            
+            <p><strong>Géneros:</strong></p>
+            <ng-container *ngFor="let genre of producto.genres">
+              <p>{{ genre }}</p>
+            </ng-container>
+            
+            <p><strong>PEGI:</strong></p>
+            <a href="https://pegi.info/" target="_blank">
+              <img [src]="'../../assets/pegi/' + producto.pegi + '.png'" alt="PEGI {{ producto.pegi }}" />
+            </a>
+            
+            <p><strong>Fecha lanzamiento:</strong></p>
+            <p>{{ producto.release_date | date }}</p>
           </ng-container>
         
-          <p><strong>PEGI:</strong></p>
-          <a href="https://pegi.info/" target="_blank">
-            <img [src]="'../../assets/pegi/' + producto.pegi + '.png'" alt="PEGI {{ producto.pegi }}" />
-          </a>
+          <!-- Información específica de Consola -->
+          <ng-container *ngIf="tipoProducto === 'consola'">
+            <p><strong>Modelo:</strong></p>
+            <p>{{ consola.model }}</p>
         
-          <p><strong>Fecha lanzamiento:</strong></p>
-          <p>{{ producto.release_date | date }}</p>
+            <p><strong>Marca:</strong></p>
+            <p>{{ consola.brand }}</p>
+        
+            <p><strong>Generación:</strong></p>
+            <p>{{ consola.generation }}</p>
+        
+            <p><strong>Disco:</strong></p>
+            <p>{{ consola.disk }} GB</p>
+        
+            <p><strong>Cantidad:</strong></p>
+            <p>{{ consola.quantity }}</p>
+          </ng-container>
+        
+          <!-- Información específica de Dispositivo -->
+          <ng-container *ngIf="tipoProducto === 'dispositivo'">
+            <p><strong>Tipo:</strong></p>
+            <p>{{ device.type }}</p>
+        
+            <p><strong>Modelo:</strong></p>
+            <p>{{ device.model }}</p>
+        
+            <p><strong>Marca:</strong></p>
+            <p>{{ device.brand }}</p>
+        
+            <p><strong>Procesador:</strong></p>
+            <p>{{ device.processor }}</p>
+        
+            <p><strong>Memoria:</strong></p>
+            <p>{{ device.memory }} GB</p>
+        
+            <p><strong>Pantalla:</strong></p>
+            <p>{{ device.screen }}</p>
+        
+            <p><strong>Cámara:</strong></p>
+            <p>{{ device.camera }}</p>
+        
+            <p><strong>Batería:</strong></p>
+            <p>{{ device.battery }} mAh</p>
+        
+            <p><strong>Disco:</strong></p>
+            <p>{{ device.disk }} GB</p>
+          </ng-container>
         </div>
 
         <div class="purchase-options">
@@ -70,15 +121,19 @@
           <div class="try-section">
             <div class="price-container">
               <div class="try-label">
-                <span>Pruebalo</span>
+                <span *ngIf="tipoProducto === 'videojuego'">Pruebalo</span>
+                <span *ngIf="tipoProducto !== 'videojuego'">Reparar</span>
               </div>
-              <div class="tryPrice">
+          
+              <!-- Precio solo visible para videojuegos -->
+              <div *ngIf="tipoProducto === 'videojuego'" class="tryPrice">
                 <span class="tryWhole">5</span>
                 <span class="tryFraction">€/semana</span>
               </div>
             </div>
-            <ion-button color="tertiary" (click)="alquilar()">
-              <ion-icon name="time-outline"></ion-icon>
+          
+            <ion-button color="tertiary" (click)="tipoProducto === 'videojuego' ? alquilar() : reparar()">
+              <ion-icon [name]="tipoProducto === 'videojuego' ? 'time-outline' : 'build-outline'"></ion-icon>
             </ion-button>
           </div>
         

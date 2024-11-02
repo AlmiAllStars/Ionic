@@ -14,6 +14,7 @@
       </ion-button>
 
       <ion-button *ngIf="isLoggedIn" (click)="openCart()">
+        <div *ngIf="cartItems.length > 0" class="cart-length">{{ cartItems.length }}</div>
         <ion-icon class="cart" slot="icon-only" name="cart-outline"></ion-icon>
       </ion-button>
 

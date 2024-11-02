@@ -148,6 +148,19 @@ ion-popover {
   border-radius: 50%;
 }
 
+.cart-length {
+  color: white;
+  position: absolute;
+  top: 0px;
+  left: 16px;
+  font-weight: 600;
+  font-size: 12px;
+  min-width: 14px;
+  z-index: 10;
+  background-color: orange;
+  border-radius: 50%;
+}
+
 @keyframes slideInFromRight {
   from {
     transform: translateX(100%);
