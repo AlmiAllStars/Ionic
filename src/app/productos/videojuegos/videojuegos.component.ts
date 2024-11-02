@@ -15,6 +15,7 @@ export class VideojuegosComponent  implements OnInit {
   generos: { nombre: string; items: Videojuego[] }[] = [];
   resultadosBusqueda: Videojuego[] = [];
   seccionActual = 'videojuegos';
+  busquedaActiva = false;
 
   isScrolled = false;
   lastScrollTop = 0;
@@ -52,6 +53,7 @@ export class VideojuegosComponent  implements OnInit {
   // Función de búsqueda para filtrar videojuegos por nombre
   buscar(event: any) {
     const query = event.target.value.toLowerCase();
+    this.busquedaActiva = query.trim() !== '';
     if (query && query.trim() !== '') {
       this.productoService.cargarVideojuegosDesdeAPI().subscribe((videojuegos) => {
         this.resultadosBusqueda = videojuegos.filter((videojuego) =>

@@ -1,3 +1,51 @@
-<p>
-  consolas works!
-</p>
+<!-- Campo de búsqueda -->
+<ion-searchbar placeholder="Buscar en {{ seccionActual }}" (ionInput)="buscar($event)"></ion-searchbar>
+
+<!-- Resultados de búsqueda -->
+<div *ngIf="busquedaActiva">
+  <div *ngIf="resultadosBusqueda.length > 0" class="resultados-busqueda">
+    <ion-card *ngFor="let resultado of resultadosBusqueda" class="resultado-item" (click)="verDetalles(resultado)">
+      <img [src]="'../../assets/gallery/public/' + resultado.picture" alt="Resultado" />
+      <ion-card-content>
+        <h3>{{ truncateText(resultado.name, 30) }}</h3>
+        <p>{{ resultado.brand }}</p>
+        <p>{{ resultado.description }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <div *ngIf="resultadosBusqueda.length === 0" class="no-resultados">
+    <img src="assets/images/sinResultados.png" alt="Sin resultados" class="imagen-sin-resultados" />
+    <p>No se encontro nada.</p>
+  </div>
+</div>
+
+<!-- Contenido de Consolas -->
+<ng-container *ngIf="seccionActual === 'consolas' && !busquedaActiva">
+  <div class="novedades-section">
+    <swiper-container loop="true" slides-per-view="1" class="novedades-carousel">
+      <swiper-slide *ngFor="let novedad of novedades">
+        <ion-card (click)="verDetalles(novedad)">
+          <img [src]="'../../assets/gallery/public/' + novedad.picture" alt="Novedad" />
+          <ion-card-content>
+            <h2>{{ novedad.name }}</h2>
+            <p>{{ truncateText(novedad.description, 110) }}</p>
+          </ion-card-content>
+        </ion-card>
+      </swiper-slide>
+    </swiper-container>
+  </div>
+
+  <div *ngFor="let brand of marcas" class="brand-section">
+    <h2 class="brand-titulo">{{ brand.nombre }}</h2>
+    <swiper-container loop="true" slides-per-view="3" class="brand-carousel">
+      <swiper-slide *ngFor="let item of brand.items">
+        <ion-card class="brand-card" (click)="verDetalles(item)">
+          <img [src]="'../../assets/gallery/public/' + item.picture" alt="Item" />
+          <ion-card-content>
+            <h3>{{ truncateText(item.name, 30) }}</h3>
+          </ion-card-content>
+        </ion-card>
+      </swiper-slide>
+    </swiper-container>
+  </div>
+</ng-container>

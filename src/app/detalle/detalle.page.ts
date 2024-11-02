@@ -23,12 +23,12 @@ export class DetallePage implements OnInit {
       if (params['producto']) {
         this.producto = JSON.parse(params['producto']);
       }
+      console.log('Producto:', this.producto);
       this.formatPrice();
     });
   }
 
   formatPrice() {
-    // Aqui sacamos la parte entera del precio en whilePrice y los decimales en fractionPrice
     const priceParts = this.producto.price.toString().split('.');
     this.wholePrice = priceParts[0];
     this.fractionPrice = priceParts[1];
@@ -36,6 +36,7 @@ export class DetallePage implements OnInit {
 
   anadirAlCarrito() {
     this.carritoService.addToCart(this.producto);
+    window.history.back();
   }
 
   alquilar() {

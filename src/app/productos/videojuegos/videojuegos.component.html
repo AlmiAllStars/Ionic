@@ -2,23 +2,25 @@
  <ion-searchbar placeholder="Buscar en {{ seccionActual }}" (ionInput)="buscar($event)"></ion-searchbar>
 
  <!-- Resultados de búsqueda -->
- <div *ngIf="resultadosBusqueda.length > 0">
-   <div class="resultados-busqueda">
-     <ion-card *ngFor="let resultado of resultadosBusqueda" class="resultado-item" (click)="verDetalles(resultado)">
-       <img [src]="'../../assets/gallery/public/' + resultado.picture" alt="Resultado" />
-       <ion-card-content>
-         <h3>{{ truncateText(resultado.name, 30) }}</h3>
-         <p *ngIf="seccionActual === 'videojuegos'">
-           {{ resultado.genres && resultado.genres.length > 0 ? resultado.genres.join(', ') : 'No genres' }}
-         </p>
-         <p *ngIf="seccionActual !== 'videojuegos'">{{ resultado.description }}</p>
-       </ion-card-content>
-     </ion-card>
-   </div>
- </div>
+ <div *ngIf="busquedaActiva">
+  <div *ngIf="resultadosBusqueda.length > 0" class="resultados-busqueda">
+    <ion-card *ngFor="let resultado of resultadosBusqueda" class="resultado-item" (click)="verDetalles(resultado)">
+      <img [src]="'../../assets/gallery/public/' + resultado.picture" alt="Resultado" />
+      <ion-card-content>
+        <h3>{{ truncateText(resultado.name, 30) }}</h3>
+        <p>{{ resultado.genres }}</p>
+        <p>{{ resultado.description }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <div *ngIf="resultadosBusqueda.length === 0" class="no-resultados">
+    <img src="assets/images/sinResultados.png" alt="Sin resultados" class="imagen-sin-resultados" />
+    <p>No se encontro nada.</p>
+  </div>
+</div>
 
  <!-- Contenido de Videojuegos -->
- <ng-container *ngIf="seccionActual === 'videojuegos' && resultadosBusqueda.length === 0">
+ <ng-container *ngIf="seccionActual === 'videojuegos' && !busquedaActiva">
    <div class="recomendados-section">
      <swiper-container loop="true" slides-per-view="1" class="recomendados-carousel">
        <swiper-slide *ngFor="let recomendado of recomendados">

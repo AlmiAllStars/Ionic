@@ -1,0 +1,77 @@
+.novedades-section {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .novedad-card {
+    width: 93.5%;
+    text-align: center;
+  }
+  
+  .brand-carousel {
+    padding-top: 10px;
+  }
+  
+  .brand-card {
+    max-width: 120px;
+    text-align: center;
+    height: 187px;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+  }
+  
+  .brand-titulo {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 16px 0 8px;
+    padding-left: 8px;
+    color: #333;
+  }
+
+  ion-card img{
+    margin: 0 auto;
+  }
+  
+
+  .nombre-videojuego {
+    font-size: 0.9em;
+    font-weight: bold;
+    margin: 8px 0 4px;
+    text-align: left;
+  }
+  
+  .resultados-busqueda {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-right: 35px;
+  }
+  
+  .resultado-item {
+    width: 100%;
+  }
+  
+  
+  ion-card-content {
+    padding: 0px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  
+  .no-resultados img{
+    
+    width: 100px;
+    height: auto;
+    margin: 0 auto;
+    margin-top: 15px;
+  }
+
+  .no-resultados p{
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 16px 0 8px;
+    padding-left: 8px;
+    color: #333;
+    text-align: center;
+  }

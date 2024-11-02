@@ -48,17 +48,23 @@
           <div class="buy-section">
             <div class="price-container">
               <div class="price-label">
-                <span>Comprar</span>
+                <span [ngStyle]="{ color: producto.quantity > 0 ? '#008000' : '#b22222' }">
+                  {{ producto.quantity > 0 ? 'Comprar' : 'Agotado' }}
+                </span>
               </div>
-              <div class="price">
+              <div class="price" *ngIf="producto.quantity > 0">
                 <span class="whole">{{ wholePrice }}</span>
                 <span class="fraction">{{ fractionPrice }}€</span>
               </div>
             </div>
-            <ion-button color="success" (click)="anadirAlCarrito()">
+            <ion-button 
+              color="success" 
+              (click)="anadirAlCarrito()" 
+              [disabled]="producto.quantity <= 0">
               <ion-icon name="cart"></ion-icon>
             </ion-button>
           </div>
+          
         
           <!-- Segunda línea: Try Section -->
           <div class="try-section">
