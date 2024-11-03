@@ -13,7 +13,7 @@
   <ion-list>
     <ion-item *ngFor="let pedido of pedidosFiltrados" (click)="abrirDetallePedido(pedido)">
       <ion-thumbnail slot="start">
-        <img [src]="pedido.productos[0].imagen" alt="Imagen del producto">
+        <img [src]="pedido.productos[0].picture" alt="Imagen del producto">
       </ion-thumbnail>
       <ion-label>
         <h2>Pedido #{{ pedido.id }}</h2>
@@ -39,12 +39,12 @@
         <ion-list>
           <ion-item *ngFor="let producto of pedidoSeleccionado.productos">
             <ion-thumbnail slot="start">
-              <img [src]="producto.imagen" alt="Imagen del producto">
+              <img [src]="producto.picture" alt="Imagen del producto" (click)="abrirProducto(producto)">
             </ion-thumbnail>
             <ion-label>
-              <h3>{{ producto.nombre }}</h3>
+              <h3>{{ producto.name }}</h3>
               <p>Cantidad: {{ producto.cantidad }}</p>
-              <p>Precio: {{ producto.precio | currency }}</p>
+              <p>Precio: {{ producto.price | currency }}</p>
             </ion-label>
           </ion-item>
         </ion-list>

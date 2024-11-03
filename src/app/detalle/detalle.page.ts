@@ -16,7 +16,7 @@ export class DetallePage implements OnInit {
   consola!: Consola;
   wholePrice: string = '';
   fractionPrice: string = '';
-  tipoProducto: 'videojuego' | 'consola' | 'dispositivo' | null = null;
+  tipoProducto: 'videojuego' | 'consola' | 'dispositivo' = "videojuego";
 
   constructor(
     private route: ActivatedRoute,
@@ -41,7 +41,6 @@ export class DetallePage implements OnInit {
         }
       }
       this.formatPrice();
-      console.log('Producto:', this.tipoProducto, this.producto, this.consola, this.device);
     });
   }
 
@@ -53,7 +52,7 @@ export class DetallePage implements OnInit {
   }
 
   anadirAlCarrito() {
-    this.carritoService.addToCart(this.producto);
+    this.carritoService.addToCart(this.producto, this.tipoProducto);
     this.volver();
   }
 

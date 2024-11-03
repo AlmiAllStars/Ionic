@@ -5,6 +5,7 @@ import { Videojuego } from '../models/videojuego';
 import { Consola } from '../models/consola';
 import { Dispositivo } from '../models/dispositivo';
 import { tap, catchError, map } from 'rxjs/operators';
+import { CarritoItem } from '../models/carrito-item';
 
 @Injectable({
   providedIn: 'root'
@@ -93,4 +94,34 @@ export class ProductoService {
     const dispositivo = this.dispositivosSubject.value.find(d => d.id === id);
     return new BehaviorSubject(dispositivo).asObservable();
   }
+
+  // Funcion que recibe un item de carrito y lo busca en los arrays de productos y devuelve el (videojuego, consola o dispositivo) que corresponda
+  async abrirProducto(item: CarritoItem): Promise<Videojuego | Consola | Dispositivo | undefined> {
+    if (item.tipo === 'videojuego' && this.videojuegosSubject.value.length === 0) {
+      // Cargar videojuegos si no están cargados
+      await this.cargarVideojuegosDesdeAPI().toPromise();
+
+    } else if (item.tipo === 'consola' && this.consolasSubject.value.length === 0) {
+      // Cargar consolas si no están cargadas
+      await this.cargarConsolasDesdeAPI().toPromise();
+      console.log('Consolas cargadas', this.consolasSubject.value);
+    } else if (item.tipo === 'dispositivo' && this.dispositivosSubject.value.length === 0) {
+      // Cargar dispositivos si no están cargados
+      await this.cargarDispositivosDesdeAPI().toPromise();
+    }
+  
+    // Ahora que los datos deberían estar cargados, buscar el producto específico
+    if (item.tipo === 'videojuego') {
+      return this.videojuegosSubject.value.find(v => v.id === item.id);
+    } else if (item.tipo === 'consola') {
+      return this.consolasSubject.value.find(c => c.id === item.id);
+    } else if (item.tipo === 'dispositivo') {
+      return this.dispositivosSubject.value.find(d => d.id === item.id);
+    } else {
+      return undefined;
+    }
+  }
+  
+  
 }
+

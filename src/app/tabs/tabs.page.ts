@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavController, ToastController } from '@ionic/angular';
+import { LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { CarritoService } from '../services/carrito.service';
 import { NotificacionService } from '../services/notificacion.service';
 import { ProductoService } from '../services/producto.service';
 import { CarritoItem } from '../models/carrito-item';
 import { Producto } from '../models/producto';
 import { AutenticacionService } from '../services/autenticacion.service';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-tabs',
@@ -43,7 +44,9 @@ export class TabsPage implements OnInit {
     private productoService: ProductoService,
     private modalController: ModalController,
     private toastController: ToastController,
-    private autenticacionService: AutenticacionService
+    private autenticacionService: AutenticacionService,
+    private router: Router,
+    private loadingController: LoadingController
   ) { }
 
   ngOnInit() {
@@ -170,10 +173,6 @@ export class TabsPage implements OnInit {
     }
   }
 
-  addToCart(product: Producto) {
-    this.carritoService.addToCart(product);
-  }
-
   removeItem(item: CarritoItem) {
     this.carritoService.removeFromCart(item.id);
   }
@@ -266,6 +265,12 @@ export class TabsPage implements OnInit {
     return new Promise(resolve => setTimeout(resolve, 300)); // Espera un breve periodo para que cierre completamente
   }
 
+  async exitCerrando() {
+    this.isLoginModalOpen = false;
+    this.returningtoModal = false;
+    return new Promise(resolve => setTimeout(resolve, 300)); // Espera un breve periodo para que cierre completamente
+  }
+
   async exitCarritoModal() {
     this.isCartOpen = false;
     return new Promise(resolve => setTimeout(resolve, 300)); // Espera un breve periodo para que cierre completamente
@@ -278,12 +283,40 @@ export class TabsPage implements OnInit {
   }
 
   async navigateToPedidos() {
-    await this.exitLoginModal();
+    await this.exitCerrando();
     this.navController.navigateForward('/pedidos');
   }
 
   async navigateToTramitar() {
     await this.exitCarritoModal();
     this.navController.navigateForward('/tramitar');
+  }
+
+  // Ahora vamos a hacer una funcion abrirProducto que desde la imagen en el carrito de un producto, lo busca en nuestros 3 arrays y lo abre en la pagina de detalle
+  async abrirProducto(item: CarritoItem) {
+    // Muestra un indicador de carga
+    const loading = await this.loadingController.create({
+      message: 'Cargando producto...'
+    });
+    await loading.present();
+    // Esperamos a cargar el producto para cerrar el loading
+    const producto = await this.productoService.abrirProducto(item);
+    await loading.dismiss();
+
+    if (producto) {
+      // Cierra el modal antes de navegar
+      await this.exitCarritoModal();
+      
+      const navigationExtras: NavigationExtras = {
+        queryParams: {
+          producto: JSON.stringify(producto)
+        }
+      };
+      
+      // Navegar a la página de detalle con los detalles del producto
+      this.router.navigate(['/tabs/detalle'], navigationExtras);
+    } else {
+      this.showToast('Producto no encontrado');
+    }
   }
 }

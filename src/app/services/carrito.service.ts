@@ -12,14 +12,14 @@ export class CarritoService {
   ]);
   public cart$: Observable<CarritoItem[]> = this.cartSubject.asObservable();
 
-  addToCart(product: Producto) {
+  addToCart(product: Producto, tipo: 'videojuego' | 'consola' | 'dispositivo') {
     const currentCart = this.cartSubject.value;
     const itemIndex = currentCart.findIndex(item => item.id === product.id);
 
     if (itemIndex > -1) {
       currentCart[itemIndex].cantidad += 1;
     } else {
-      const newItem: CarritoItem = { ...product, cantidad: 1 };
+      const newItem: CarritoItem = { ...product, cantidad: 1 , tipo};
       currentCart.push(newItem);
     }
 
