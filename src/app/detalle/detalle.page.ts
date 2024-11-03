@@ -4,6 +4,9 @@ import { Videojuego } from '../models/videojuego';
 import { CarritoService } from '../services/carrito.service';
 import { Consola } from '../models/consola';
 import { Dispositivo } from '../models/dispositivo';
+import { AutenticacionService } from '../services/autenticacion.service';
+import { ToastController } from '@ionic/angular';
+import { TabsPage } from '../tabs/tabs.page';
 
 @Component({
   selector: 'app-detalle',
@@ -21,7 +24,10 @@ export class DetallePage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private carritoService: CarritoService,
-    private router: Router
+    private router: Router,
+    private autenticacionService: AutenticacionService,
+    private toastController: ToastController,
+    private tabsPage: TabsPage
   ) {}
 
   ngOnInit() {
@@ -51,9 +57,31 @@ export class DetallePage implements OnInit {
     this.fractionPrice = priceParts[1];
   }
 
-  anadirAlCarrito() {
-    this.carritoService.addToCart(this.producto, this.tipoProducto);
-    this.volver();
+  async anadirAlCarrito() {
+    // Verifica si el usuario está logueado
+    this.autenticacionService.verificarSesion().subscribe(async (response) => {
+      if (response.success) {
+        // El usuario está logueado, añade el producto al carrito
+        this.carritoService.addToCart(this.producto, this.tipoProducto);
+        this.showToast('Producto añadido al carrito');
+        this.volver();
+      } else {
+        // El usuario no está logueado, muestra un Toast y abre el modal de login
+        this.showToast('Entra con tu cuenta para empezar a comprar');
+  
+        // Abre el modal de login
+        this.tabsPage.openLoginModal();
+      }
+    });
+  }
+  
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      position: 'bottom'
+    });
+    toast.present();
   }
 
   alquilar() {
@@ -71,5 +99,10 @@ export class DetallePage implements OnInit {
       // Navegar a `defaultHref` si no hay historial previo
       this.router.navigate(['/tabs/productos/']);
     }
+  }
+
+  addWish() {
+    this.carritoService.addToWishlist(this.producto);
+    this.showToast('Producto añadido a la lista de deseos');
   }
 }

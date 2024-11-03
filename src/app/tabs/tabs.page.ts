@@ -25,8 +25,10 @@ export class TabsPage implements OnInit {
   notifications: any[] = [];
   products: Producto[] = [];
   cartItems: CarritoItem[] = [];
+  wishlistItems: Producto[] = [];
   total = 0;
   isCartOpen = false;
+  isWishlistModalOpen = false;
 
   isLoginModalOpen = false;
   isLoggedIn = false;
@@ -49,8 +51,7 @@ export class TabsPage implements OnInit {
     private loadingController: LoadingController
   ) { }
 
-  ngOnInit() {
-
+  async ngOnInit() {
     // Suscribirse a las notificaciones
     this.notificacionService.notifications$.subscribe(notifications => {
       this.notifications = notifications;
@@ -62,13 +63,26 @@ export class TabsPage implements OnInit {
       this.calculateTotal();
     });
 
-    this.verificarSesion();
+    this.carritoService.wishlist$.subscribe(wishlistItems => {
+      this.wishlistItems = wishlistItems;
+    });
+
+    // Verificar la sesión y cargar el carrito y deseados si está logueado
+    await this.verificarSesion();
+    if (this.isLoggedIn) {
+      this.carritoService.cargarCarritoDesdeBD();
+      this.carritoService.cargarDeseadosDesdeBD();
+    }
     if (this.returningtoModal) this.isLoginModalOpen = true;
     this.returningtoModal = false;
   }
 
-  ionViewWillEnter() {
-    this.verificarSesion();
+  async ionViewWillEnter() {
+    await this.verificarSesion();
+    if (this.isLoggedIn) {
+      this.carritoService.cargarCarritoDesdeBD();
+      this.carritoService.cargarDeseadosDesdeBD();
+    }
     if (this.returningtoModal) {
       this.isLoginModalOpen = true; // Abre el modal si returningtoModal es true
       this.returningtoModal = false; // Restablece returningtoModal a false
@@ -91,6 +105,7 @@ export class TabsPage implements OnInit {
   }
 
   openLoginModal() {
+    this.isWishlistModalOpen = false;
     this.isLoginModalOpen = true;
   }
 
@@ -104,7 +119,9 @@ export class TabsPage implements OnInit {
     try {
       const response = await this.autenticacionService.login(this.email, this.password).toPromise();
       if (response.success) {
-        this.isLoggedIn = true;              // Marca como logueado
+        this.isLoggedIn = true; 
+        this.carritoService.cargarCarritoDesdeBD();
+        this.carritoService.cargarDeseadosDesdeBD();
         this.userName = response.usuario.nombre + " " + response.usuario.apellido;
         this.userEmail = response.usuario.email;
         this.userPicture = response.usuario.imagen;
@@ -118,7 +135,7 @@ export class TabsPage implements OnInit {
     }
   }
 
-  verificarSesion() {
+  async verificarSesion() {
     this.autenticacionService.verificarSesion().subscribe(response => {
       this.isLoggedIn = response.success;
       if (this.isLoggedIn) {
@@ -133,10 +150,15 @@ export class TabsPage implements OnInit {
     });
   }
 
-  logout() {
-    this.autenticacionService.logout(); // Llama al método de logout en el servicio
-    this.isLoggedIn = false;            // Marca como no logueado
-    this.userName = '';                 // Limpia el nombre del usuario
+  async logout() {
+    // Guardar carrito y deseados en la base de datos antes de cerrar sesión
+    await this.carritoService.guardarCarritoEnBD();
+    await this.carritoService.guardarDeseadosEnBD();
+
+    // Cerrar sesión
+    this.autenticacionService.logout();
+    this.isLoggedIn = false;
+    this.userName = '';
     this.showToast('Sesión cerrada');
   }
 
@@ -158,6 +180,7 @@ export class TabsPage implements OnInit {
     this.navController.navigateRoot('/tabs/productos');
   }
   openCart() {
+    this.isWishlistModalOpen = false;
     this.isCartOpen = true;
   }
 
@@ -191,6 +214,19 @@ export class TabsPage implements OnInit {
 
   calculateTotal() {
     this.total = this.cartItems.reduce((acc, item) => acc + (item.price * item.cantidad), 0);
+  }
+
+  async openWishlistModal() {
+    await this.exitLoginModal();
+    this.isWishlistModalOpen = true;
+  }
+
+  closeWishlistModal() {
+    this.isWishlistModalOpen = false;
+  }
+
+  eliminarDeDeseados(producto: Producto) {
+    this.carritoService.removeFromWishlist(producto.id);
   }
 
   async showInfo() {

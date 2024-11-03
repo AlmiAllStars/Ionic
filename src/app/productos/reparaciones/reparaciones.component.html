@@ -1,3 +1,91 @@
-<p>
-  reparaciones works!
-</p>
+
+  <ion-segment [(ngModel)]="selectedType" (ionChange)="filtrarTipos()">
+    <ion-segment-button value="consola">
+      Consolas
+    </ion-segment-button>
+    <ion-segment-button value="dispositivo">
+      Dispositivos
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Selección de Marca dentro del Tipo Seleccionado -->
+  <ion-list *ngIf="selectedType">
+    <ion-item *ngFor="let tipo of tiposFiltrados">
+      <ion-thumbnail slot="start">
+        <img [src]="tipo.imageUrl">
+      </ion-thumbnail>
+      <ion-label>
+        <h2>{{ tipo.name }}</h2>
+        <p>Reparación disponible</p>
+      </ion-label>
+      <ion-button slot="end" color="primary" (click)="seleccionarTipo(tipo)">
+        Seleccionar
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <!-- Selección de Modelo dentro del Tipo Seleccionado -->
+  <ion-item *ngIf="tipoSeleccionado">
+    <ion-label>Modelo</ion-label>
+    <ion-select [(ngModel)]="modeloSeleccionado" placeholder="Selecciona el modelo">
+      <ion-select-option *ngFor="let modelo of modelosFiltrados" [value]="modelo">{{ modelo.name }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <!-- Formulario de Detalles de Reparación -->
+  <ion-card *ngIf="modeloSeleccionado">
+    <ion-card-header>
+      <ion-card-title>Detalles de la Reparación</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form (ngSubmit)="enviarFormulario()">
+        <ion-item>
+          <ion-label position="stacked">Descripción del Problema</ion-label>
+          <ion-textarea [(ngModel)]="detalleProblema" name="detalleProblema" required></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Gravedad del Problema</ion-label>
+          <ion-select [(ngModel)]="gravedadProblema" name="gravedadProblema" placeholder="Selecciona una opción">
+            <ion-select-option value="baja">Baja</ion-select-option>
+            <ion-select-option value="media">Media</ion-select-option>
+            <ion-select-option value="alta">Alta</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- Email de Contacto Prellenado y Editable -->
+        <ion-item>
+          <ion-label position="stacked">Email de Contacto</ion-label>
+          <ion-input type="email" [(ngModel)]="emailContacto" name="emailContacto" required></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" color="success" type="submit">
+          Enviar Solicitud de Reparación
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Preguntas Frecuentes -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Preguntas Frecuentes</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>
+            <h3>¿Cuánto tiempo lleva una reparación?</h3>
+            <p>Generalmente, una reparación puede tardar entre 3 a 7 días, dependiendo de la disponibilidad de piezas.</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>¿Qué garantía tienen las reparaciones?</h3>
+            <p>Ofrecemos una garantía de 90 días para todas las reparaciones realizadas en nuestra tienda.</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+

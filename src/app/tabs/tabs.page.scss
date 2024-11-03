@@ -594,6 +594,61 @@ body.dark .logout-button ion-item {
 }
 
 
+.wishlist-modal {
+  position: fixed;
+  top: 12%;
+  left: 20%;
+  height: 82%;
+  width: 40%;
+  max-width: 400px;
+  background-color: white;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+.wishlist-modal.open {
+  transform: translateX(0);
+}
+.deseado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.deseado-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+ion-img {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  object-fit: cover;
+}
+
+.heart-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  margin-bottom: 8px;
+}
+
+
+
+.deseado{
+  border-bottom: 1px solid #ccc;
+}
+
+
+
 
 
 
