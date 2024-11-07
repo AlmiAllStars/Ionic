@@ -35,25 +35,27 @@ export class AppComponent {
 
   ngOnInit() {
     // Puedes cargar carrito y deseados aquí si el usuario ya está autenticado
-    this.verificarSesion();
   }
 
-  async verificarSesion() {
-    // Verificar si el usuario está logueado y cargar carrito y deseados
-    const response = await this.autenticacionService.verificarSesion().toPromise();
-    if (response.success) {
-      await this.carritoService.cargarCarritoDesdeBD();
-      await this.carritoService.cargarDeseadosDesdeBD();
-    }
-  }
 
   async guardarCarritoYDeseados() {
     // Verificar si el usuario está logueado antes de guardar
     const isLoggedIn = await this.autenticacionService.verificarSesion().toPromise();
     if (isLoggedIn.success) {
-      await this.carritoService.guardarCarritoEnBD();
+      await this.guardarCarrito();
       await this.carritoService.guardarDeseadosEnBD();
       console.log('Carrito y deseados guardados en pausa o cierre.');
+    }
+  }
+
+  async guardarCarrito() {
+    const cartData = JSON.stringify(this.carritoService.getCartItems()); // Obtener los datos del carrito
+  
+    try {
+      await this.autenticacionService.guardarCarrito(cartData);
+      console.log('Carrito guardado exitosamente.');
+    } catch (error) {
+      console.error('Error al guardar el carrito:', error);
     }
   }
 }

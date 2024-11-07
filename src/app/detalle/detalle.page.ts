@@ -7,6 +7,7 @@ import { Dispositivo } from '../models/dispositivo';
 import { AutenticacionService } from '../services/autenticacion.service';
 import { ToastController } from '@ionic/angular';
 import { TabsPage } from '../tabs/tabs.page';
+import { ProductoService } from '../services/producto.service';
 
 @Component({
   selector: 'app-detalle',
@@ -27,28 +28,34 @@ export class DetallePage implements OnInit {
     private router: Router,
     private autenticacionService: AutenticacionService,
     private toastController: ToastController,
-    private tabsPage: TabsPage
+    private tabsPage: TabsPage,
+    private productoService: ProductoService
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      if (params['producto']) {
-        if (params['producto'].includes('generation')) {
-          this.producto = JSON.parse(params['producto']);
-          this.consola = JSON.parse(params['producto']);
-          this.tipoProducto = 'consola';
-        } else if (params['producto'].includes('genres')) {
-          this.tipoProducto = 'videojuego';
-          this.producto = JSON.parse(params['producto']);
-        } else {
-          this.producto = JSON.parse(params['producto']);
-          this.tipoProducto = 'dispositivo';
-          this.device = JSON.parse(params['producto']);
-        }
+    const data = this.productoService.getProductoDetalles();
+  
+    if (data) {
+      if (data.generation) {
+        this.producto = data;
+        this.consola = data;
+        this.tipoProducto = 'consola';
+      } else if (data.genres) {
+        this.tipoProducto = 'videojuego';
+        this.producto = data;
+      } else {
+        this.producto = data;
+        this.tipoProducto = 'dispositivo';
+        this.device = data;
       }
-      this.formatPrice();
-    });
+    } else {
+      this.showToast('No se encontraron detalles del producto.');
+      this.router.navigate(['/tabs/home']); // Redirigir si no hay datos
+    }
+  
+    this.formatPrice();
   }
+  
 
 
   formatPrice() {
@@ -62,7 +69,8 @@ export class DetallePage implements OnInit {
     this.autenticacionService.verificarSesion().subscribe(async (response) => {
       if (response.success) {
         // El usuario está logueado, añade el producto al carrito
-        this.carritoService.addToCart(this.producto, this.tipoProducto);
+        this.carritoService.addToCart(this.producto, this.tipoProducto, "order");
+        this.guardarCarrito();
         this.showToast('Producto añadido al carrito');
         this.volver();
       } else {
@@ -74,6 +82,18 @@ export class DetallePage implements OnInit {
       }
     });
   }
+
+  async guardarCarrito() {
+    const cartData = JSON.stringify(this.carritoService.getCartItems()); // Obtener los datos del carrito
+  
+    try {
+      await this.autenticacionService.guardarCarrito(cartData);
+      console.log('Carrito guardado exitosamente.');
+    } catch (error) {
+      console.error('Error al guardar el carrito:', error);
+    }
+  }
+  
   
   async showToast(message: string) {
     const toast = await this.toastController.create({
@@ -84,8 +104,22 @@ export class DetallePage implements OnInit {
     toast.present();
   }
 
-  alquilar() {
-    console.log('Producto alquilado:', this.producto);
+  async alquilar() {
+    this.autenticacionService.verificarSesion().subscribe(async (response) => {
+      if (response.success) {
+        // El usuario está logueado, añade el producto al carrito
+        this.carritoService.addToCart(this.producto, this.tipoProducto, "rent");
+        this.guardarCarrito();
+        this.showToast('Producto añadido al carrito');
+        this.volver();
+      } else {
+        // El usuario no está logueado, muestra un Toast y abre el modal de login
+        this.showToast('Entra con tu cuenta para empezar a comprar');
+  
+        // Abre el modal de login
+        this.tabsPage.openLoginModal();
+      }
+    });
   }
 
   reparar() {

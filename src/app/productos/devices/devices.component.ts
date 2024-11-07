@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { ProductoService } from '../../services/producto.service';
 import { Dispositivo } from '../../models/dispositivo';
 import { NavigationExtras, Router } from '@angular/router';
+import { LoadingController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-devices',
@@ -15,14 +16,36 @@ export class DevicesComponent implements OnInit {
   seccionActual = 'dispositivos';
   busquedaActiva = false;
 
-  constructor(private productoService: ProductoService, private router: Router) {}
+  constructor(private productoService: ProductoService, private router: Router, private loadingController: LoadingController, private toastController: ToastController) {}
 
-  ngOnInit() {
-    // Cargar datos de dispositivos
-    this.productoService.cargarDispositivosDesdeAPI().subscribe((dispositivos) => {
-      this.cargarNovedades(dispositivos);
-      this.cargarTipos(dispositivos);
+  async ngOnInit() {
+    const loading = await this.loadingController.create({
+      message: 'Cargando consolas...',
+      cssClass: 'custom-loading',
+      spinner: 'crescent', // Spinner con estilo moderno
     });
+    await loading.present();
+  
+    this.productoService.cargarDispositivosDesdeAPI().subscribe({
+      next: async (devices) => {
+        this.cargarNovedades(devices);
+        this.cargarTipos(devices);
+        await loading.dismiss();
+      },
+      error: async () => {
+        await loading.dismiss();
+        this.showToast('Error al cargar los dispositivos');
+      }
+    });
+  }
+
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      position: 'bottom'
+    });
+    toast.present();
   }
 
   cargarNovedades(dispositivos: Dispositivo[]) {
@@ -59,12 +82,8 @@ export class DevicesComponent implements OnInit {
   }
 
   verDetalles(dispositivo: Dispositivo) {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        producto: JSON.stringify(dispositivo)
-      }
-    };
-    this.router.navigate(['/tabs/detalle'], navigationExtras);
+    this.productoService.setProductoDetalles(dispositivo);
+    this.router.navigate(['/tabs/detalle']);
   }
 
   truncateText(text: string, maxLength: number): string {

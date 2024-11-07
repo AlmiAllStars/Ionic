@@ -12,7 +12,8 @@ import { CarritoItem } from '../models/carrito-item';
 })
 export class ProductoService {
   private apiUrl = 'http://3.229.96.79:8080/juegalmi/ws/';
-  private usarDatosLocales = true; // Cambiar a `false` para usar la API real
+  private usarDatosLocales = false; // Cambiar a `false` para usar la API real
+  private productoDetalles: any = null;
 
   // Subjects y Observables para cada tipo de producto
   private videojuegosSubject = new BehaviorSubject<Videojuego[]>([]);
@@ -120,6 +121,22 @@ export class ProductoService {
     } else {
       return undefined;
     }
+  }
+  
+  
+  setProductoDetalles(producto: any) {
+    this.productoDetalles = null;
+    this.productoDetalles = producto;
+    sessionStorage.removeItem('productoDetalles');
+    sessionStorage.setItem('productoDetalles', JSON.stringify(producto));
+  }
+  
+  getProductoDetalles(): any {
+    if (!this.productoDetalles) {
+      const data = sessionStorage.getItem('productoDetalles');
+      this.productoDetalles = data ? JSON.parse(data) : null;
+    }
+    return this.productoDetalles;
   }
   
   

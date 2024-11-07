@@ -9,6 +9,7 @@
 
 <ion-content>
   <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="buscarPedidos($event)" placeholder="Buscar por nombre de producto"></ion-searchbar>
+
   <!-- Lista de pedidos -->
   <ion-list>
     <ion-item *ngFor="let pedido of pedidosFiltrados" (click)="abrirDetallePedido(pedido)">

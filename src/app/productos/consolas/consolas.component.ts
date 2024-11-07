@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { ProductoService } from '../../services/producto.service';
 import { Consola } from '../../models/consola';
 import { NavigationExtras, Router } from '@angular/router';
+import { LoadingController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-consolas',
@@ -15,15 +16,38 @@ export class ConsolasComponent implements OnInit {
   seccionActual = 'consolas';
   busquedaActiva = false;
 
-  constructor(private productoService: ProductoService, private router: Router) {}
+  constructor(private productoService: ProductoService, private router: Router, private loadingController: LoadingController, private toastController: ToastController) {}
 
-  ngOnInit() {
-    // Cargar datos de consolas
-    this.productoService.cargarConsolasDesdeAPI().subscribe((consolas) => {
-      this.cargarNovedades(consolas);
-      this.cargarMarcas(consolas);
+  async ngOnInit() {
+    const loading = await this.loadingController.create({
+      message: 'Cargando consolas...',
+      cssClass: 'custom-loading',
+      spinner: 'crescent', // Spinner con estilo moderno
+    });
+    await loading.present();
+  
+    this.productoService.cargarConsolasDesdeAPI().subscribe({
+      next: async (consolas) => {
+        this.cargarNovedades(consolas);
+        this.cargarMarcas(consolas);
+        await loading.dismiss();
+      },
+      error: async () => {
+        await loading.dismiss();
+        this.showToast('Error al cargar las consolas');
+      }
     });
   }
+
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      position: 'bottom'
+    });
+    toast.present();
+  }
+  
 
   cargarNovedades(consolas: Consola[]) {
     const maxGeneration = Math.max(...consolas.map(c => c.generation));
@@ -61,13 +85,10 @@ export class ConsolasComponent implements OnInit {
   }
 
   verDetalles(consola: Consola) {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        producto: JSON.stringify(consola)
-      }
-    };
-    this.router.navigate(['/tabs/detalle'], navigationExtras);
+    this.productoService.setProductoDetalles(consola);
+    this.router.navigate(['/tabs/detalle']);
   }
+  
 
   truncateText(text: string, maxLength: number): string {
     if (text.length <= maxLength) {

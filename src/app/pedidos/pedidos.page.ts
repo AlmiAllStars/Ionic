@@ -3,21 +3,43 @@ import { LoadingController, NavController, ToastController } from '@ionic/angula
 import { CarritoItem } from '../models/carrito-item';
 import { NavigationExtras, Route, Router } from '@angular/router';
 import { ProductoService } from '../services/producto.service';
+import { AutenticacionService } from '../services/autenticacion.service';
+export interface Sale {
+  sale: {
+    id: number;
+    timestamp: string;
+    processed: boolean;
+    resolution_timestamp: string | null;
+  };
+  operations: Operation[];
+}
 
-interface Pedido {
+export interface Operation {
+  operation_id: number;
+  charge: number;
+  product: {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    picture: string;
+  };
+}
+
+export interface Pedido {
   id: number;
-  fecha: Date;
+  fecha: string;
   total: number;
-  productos: { 
-    id: number,
-    name: string, // Cambiado de `nombre` a `name`
-    description: string, // Cambiado de `descripcion` a `description`
-    price: number, // Cambiado de `precio` a `price`
-    picture: string, // Cambiado de `imagen` a `picture`
-    cantidad: number,
-    tipo: 'videojuego' | 'consola' | 'dispositivo'
+  productos: {
+    cantidad: number;
+    price: number;
+    id: number;
+    name: string;
+    description: string;
+    picture: string;
   }[];
 }
+
 
 @Component({
   selector: 'app-pedidos',
@@ -25,41 +47,47 @@ interface Pedido {
   styleUrls: ['./pedidos.page.scss'],
 })
 export class PedidosPage implements OnInit {
-  pedidos: Pedido[] = [
-    {
-      id: 1,
-      fecha: new Date(),
-      total: 49.99,
-      productos: [
-        {id:10, name: 'Starfield',description: '', picture: '../../assets/gallery/public/juego08.jpg', cantidad: 1, price: 49.99 ,tipo: 'videojuego'},
-        {id:14, name: 'Xbox One S', description : '', picture: '../../assets/gallery/public/consola08.jpg', cantidad: 2, price: 19.99 ,tipo: 'consola'},
-      ],
-    },
-    {
-      id: 2,
-      fecha: new Date(),
-      total: 89.99,
-      productos: [
-        {id: 110, name: 'Galaxy S21', description: '' , picture: '../../assets/gallery/public/device08.jpg', cantidad: 1, price: 89.99 , tipo: 'dispositivo'},
-      ],
-    },
-  ];
+  pedidos: Pedido[] = []; // Cambiar a Pedido[]
+  pedidosFiltrados: Pedido[] = [];  
+  pedidoSeleccionado: any | null = null; // Pedido que se muestra en el modal
+  searchTerm: string = ''; // Término de búsqueda
+  isDetalleModalOpen: boolean = false; // Estado del modal de detalle
 
-  searchTerm: string = '';
-  pedidosFiltrados: Pedido[] = [];
-  isDetalleModalOpen = false;
-  pedidoSeleccionado: Pedido | undefined;
-
-  constructor(private navController: NavController, private productoService: ProductoService, private router: Router, private toastController: ToastController, private loadingController: LoadingController) {}
+  constructor(private navController: NavController, private productoService: ProductoService, private router: Router, private toastController: ToastController, private loadingController: LoadingController,private authService: AutenticacionService) {}
 
   ngOnInit() {
-    this.pedidosFiltrados = this.pedidos;
+    this.cargarPedidos();
+  }
+
+  cargarPedidos() {
+    this.authService.obtenerPedidos().subscribe({
+      next: (response: Sale[]) => {
+        console.log('Pedidos:', response);
+        this.pedidos = response.map((sale: Sale) => ({
+          id: sale.sale.id,
+          fecha: sale.sale.timestamp,
+          total: sale.operations.reduce((acc, op) => acc + op.charge, 0),
+          productos: sale.operations.map(op => ({
+            ...op.product,
+            cantidad: 1, // Ajustar según lógica
+            price: op.charge,
+          })),
+        }));
+        this.pedidosFiltrados = [...this.pedidos];
+      },
+      error: (error) => {
+        console.error('Error al obtener los pedidos:', error);
+      },
+    });
+    
   }
 
   buscarPedidos(event: any) {
-    const searchTerm = event.target.value.toLowerCase();
+    const valor = this.searchTerm.toLowerCase();
     this.pedidosFiltrados = this.pedidos.filter(pedido =>
-      pedido.productos.some(producto => producto.name.toLowerCase().includes(searchTerm))
+      pedido.productos.some(producto =>
+        producto.name.toLowerCase().includes(valor)
+      )
     );
   }
 
@@ -82,6 +110,7 @@ export class PedidosPage implements OnInit {
   }
 
   async abrirProducto(item: CarritoItem) {
+    console.log('Abriendo producto:', item);
     // Muestra un indicador de carga
     const loading = await this.loadingController.create({
       message: 'Cargando producto...'

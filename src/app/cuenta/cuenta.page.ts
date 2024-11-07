@@ -49,7 +49,6 @@ export class CuentaPage implements OnInit {
   async saveChanges() {
     if (this.fieldToEdit) {
       if (this.fieldToEdit === 'contraseña') {
-        // Validación para la contraseña
         if (!this.oldPassword || !this.newPassword || !this.confirmPassword) {
           this.showToast('Por favor, complete todos los campos de contraseña');
           return;
@@ -58,24 +57,44 @@ export class CuentaPage implements OnInit {
           this.showToast('Las contraseñas no coinciden');
           return;
         }
-        // Aquí puedes añadir lógica adicional para verificar la contraseña anterior
-        this.user!.contraseña = this.newPassword;
-      } else {
-        // Actualización de otros campos
-        (this.user as any)[this.fieldToEdit] = this.editValue;
+        this.editValue = this.newPassword; // Actualizar contraseña
       }
+  
+      this.autenticacionService.actualizarUsuario(this.user!.id, { [this.mapFieldToBackend(this.fieldToEdit)]: this.editValue }).subscribe({
+        next: () => {
+          this.showToast('Cambios guardados');
+          this.closeEditModal();
 
-      // Guardar cambios a través del servicio
-      this.autenticacionService.actualizarUsuario(this.user!.id, { [this.fieldToEdit]: this.editValue }).subscribe(() => {
-        this.showToast('Cambios guardados');
-        this.closeEditModal();
+        },
+        error: (err) => {
+          this.showToast('Error al guardar cambios: ' + err.message);
+        }
       });
+
+      if (this.fieldToEdit) {
+        this.autenticacionService.actualizarUsuarioLocal(this.fieldToEdit, this.editValue);
+      };
     }
   }
-
   closePage() {
     this.navController.back();
   }
+
+  private mapFieldToBackend(field: string): string {
+    const fieldMapping: { [key: string]: string } = {
+      nombre: 'name',
+      apellido: 'surname',
+      email: 'email',
+      telefono: 'phone',
+      direccion: 'address',
+      codigoPostal: 'postal_code',
+      contraseña: 'password',
+      // Añade otros campos según sea necesario
+    };
+  
+    return fieldMapping[field] || field;
+  }
+  
 
   async uploadImage() {
     this.showToast('Funcionalidad de subir imagen en desarrollo');

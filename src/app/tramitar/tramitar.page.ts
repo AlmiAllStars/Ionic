@@ -147,10 +147,14 @@ export class TramitarPage implements OnInit {
     return false;
   }
 
-  procesarPedido() {
-    console.log("Pedido tramitado correctamente");
-    this.carritoService.clearCart();
-    this.navCtrl.navigateRoot('/tabs/productos');
+  async procesarPedido() {
+    console.log(this.carritoService.getCartItems());
+    try {
+      await this.carritoService.procesarCarrito();
+      console.log('Compra finalizada con éxito.');
+    } catch (error) {
+      console.error('Error al finalizar la compra:', error);
+    }
   }
 
 }

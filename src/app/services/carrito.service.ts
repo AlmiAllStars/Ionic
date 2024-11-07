@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CarritoItem } from '../models/carrito-item';
 import { Producto } from '../models/producto';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AutenticacionService } from './autenticacion.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,14 +18,14 @@ export class CarritoService {
 
   constructor(private http: HttpClient) { }
 
-  addToCart(product: Producto, tipo: 'videojuego' | 'consola' | 'dispositivo') {
+  addToCart(product: Producto, tipo: 'videojuego' | 'consola' | 'dispositivo', tipoOperacion: 'order' | 'rent') {
     const currentCart = this.cartSubject.value;
     const itemIndex = currentCart.findIndex(item => item.id === product.id);
 
     if (itemIndex > -1) {
       currentCart[itemIndex].cantidad += 1;
     } else {
-      const newItem: CarritoItem = { ...product, cantidad: 1 , tipo};
+      const newItem: CarritoItem = { ...product, cantidad: 1 , tipo, operationType: tipoOperacion};
       currentCart.push(newItem);
     }
 
@@ -77,24 +78,33 @@ export class CarritoService {
     }
   }
 
-  async guardarCarritoEnBD() {
-    const cartData = JSON.stringify(this.cartSubject.value); // Stringify JSON
+  getCartItems(): CarritoItem[] {
+    return this.cartSubject.value;
+  }
+  
+  
+
+  cargarCarritoDesdeJson(cartJson: string): void {
     try {
-      //await this.http.post(`${this.apiUrl}/guardarCarrito`, { cart: cartData }).toPromise();
+      const cartItems: CarritoItem[] = cartJson ? JSON.parse(cartJson) : [];
+      this.cartSubject.next(cartItems);
+      console.log('Carrito cargado desde JSON.');
     } catch (error) {
-      console.error('Error al guardar el carrito en la base de datos', error);
+      console.error('Error al cargar el carrito desde JSON', error);
     }
   }
 
-  async cargarCarritoDesdeBD() {
+  cargarWishlistDesdeJson(wishlistJson: string): void {
     try {
-      const response = await this.http.get<{ cart: string }>(`${this.apiUrl}/obtenerCarrito`).toPromise();
-      const cartItems: CarritoItem[] = response?.cart ? JSON.parse(response.cart) : [];
-      this.cartSubject.next(cartItems);
+      const wishlistItems: Producto[] = wishlistJson ? JSON.parse(wishlistJson) : [];
+      this.wishlistSubject.next(wishlistItems);
+      console.log('Lista de deseados cargada desde JSON.');
     } catch (error) {
-      console.error('Error al cargar el carrito desde la base de datos', error);
+      console.error('Error al cargar la lista de deseados desde JSON', error);
     }
   }
+
+  
 
   // Guardar lista de deseados en la base de datos
   async guardarDeseadosEnBD() {
@@ -116,4 +126,44 @@ export class CarritoService {
       console.error('Error al cargar la lista de deseados desde la base de datos', error);
     }
   }
+
+  getWishlistItems(): Producto[] {
+    return this.wishlistSubject.value;
+  }
+  
+  async procesarCarrito(): Promise<void> {
+    const cartItems = this.getCartItems(); // Obtener los elementos del carrito
+    console.log('Elementos del carrito:', cartItems);
+    const operationsData = cartItems.map(item => ({
+      id_product: item.id,
+      type: item.operationType, // Usamos el nuevo campo operationType
+      quantity: item.operationType === 'order' ? item.cantidad: undefined, // Cantidad como cantidad si es order
+      rental_time: item.operationType === 'rent' ? 5 : undefined, // Cantidad como tiempo de alquiler si es rent
+      price: item.operationType === 'rent' ? 15 : item.price // Precio específico si es un alquiler
+    }));
+  
+    try {
+      const token = localStorage.getItem('token'); // Token para autenticación
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+      const requestBody = {
+        worker_id: 1, // Reemplazar con el ID del worker real que corresponda
+        operations: operationsData
+      };
+  
+      const response = await this.http
+        .post(`${this.apiUrl}secure/operations`, requestBody, { headers })
+        .toPromise();
+  
+      console.log('Operaciones procesadas correctamente:', response);
+  
+      // Limpiar el carrito después del procesamiento
+      this.clearCart();
+    } catch (error) {
+      console.error('Error al procesar operaciones:', error);
+    }
+  }
+  
+  
+  
 }

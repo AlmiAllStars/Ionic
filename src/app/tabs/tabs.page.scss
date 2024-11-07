@@ -647,6 +647,18 @@ ion-img {
   border-bottom: 1px solid #ccc;
 }
 
+.custom-loading {
+  --background: rgba(0, 0, 0, 0.8); // Fondo oscuro semitransparente
+  --spinner-color: #ffffff; // Color del spinner
+  color: white; // Color del texto
+  font-size: 1.2rem; // Tamaño del texto
+}
+
+.custom-loading .spinner-crescent {
+  width: 50px;
+  height: 50px;
+}
+
 
 
 

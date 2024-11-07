@@ -69,21 +69,13 @@ export class TabsPage implements OnInit {
 
     // Verificar la sesión y cargar el carrito y deseados si está logueado
     await this.verificarSesion();
-    if (this.isLoggedIn) {
-      this.carritoService.cargarCarritoDesdeBD();
-      this.carritoService.cargarDeseadosDesdeBD();
-    }
     if (this.returningtoModal) this.isLoginModalOpen = true;
     this.returningtoModal = false;
   }
 
   async ionViewWillEnter() {
     await this.verificarSesion();
-    if (this.isLoggedIn) {
-      this.carritoService.cargarCarritoDesdeBD();
-      this.carritoService.cargarDeseadosDesdeBD();
-    }
-    if (this.returningtoModal) {
+    if(this.returningtoModal) {
       this.isLoginModalOpen = true; // Abre el modal si returningtoModal es true
       this.returningtoModal = false; // Restablece returningtoModal a false
     }
@@ -116,12 +108,18 @@ export class TabsPage implements OnInit {
   }
 
   async login() {
+    // Muestra un indicador de carga con un estilo personalizado
+    const loading = await this.loadingController.create({
+      message: 'Iniciando sesión...',
+      cssClass: 'custom-loading',
+      spinner: 'crescent', // Spinner más moderno
+    });
+    await loading.present();
+  
     try {
       const response = await this.autenticacionService.login(this.email, this.password).toPromise();
       if (response.success) {
         this.isLoggedIn = true; 
-        this.carritoService.cargarCarritoDesdeBD();
-        this.carritoService.cargarDeseadosDesdeBD();
         this.userName = response.usuario.nombre + " " + response.usuario.apellido;
         this.userEmail = response.usuario.email;
         this.userPicture = response.usuario.imagen;
@@ -132,35 +130,93 @@ export class TabsPage implements OnInit {
       }
     } catch (error) {
       this.showToast('Ocurrió un error al iniciar sesión');
+    } finally {
+      await loading.dismiss(); // Asegúrate de siempre cerrar el loading
     }
   }
+  
 
   async verificarSesion() {
-    this.autenticacionService.verificarSesion().subscribe(response => {
-      this.isLoggedIn = response.success;
-      if (this.isLoggedIn) {
-        this.userName = response.usuario.nombre + " " + response.usuario.apellido;
-        this.userEmail = response.usuario.email;
-        this.userPicture = response.usuario.imagen;
-        this.isDarkMode = localStorage.getItem('darkMode') === 'true';
-      }
-      else {
-        this.isDarkMode = false;
+    const loading = await this.loadingController.create({
+      message: 'Verificando sesión...',
+      cssClass: 'custom-loading',
+      spinner: 'crescent',
+    });
+    await loading.present();
+  
+    this.autenticacionService.verificarSesion().subscribe({
+      next: async (response) => {
+        this.isLoggedIn = response.success;
+        if (this.isLoggedIn) {
+          this.userName = response.usuario.nombre + " " + response.usuario.apellido;
+          this.userEmail = response.usuario.email;
+          this.userPicture = response.usuario.imagen;
+          this.isDarkMode = localStorage.getItem('darkMode') === 'true';
+        } else {
+          this.isDarkMode = false;
+        }
+        await loading.dismiss();
+      },
+      error: async () => {
+        await loading.dismiss();
+        this.showToast('Error al verificar sesión');
       }
     });
   }
+  
 
   async logout() {
-    // Guardar carrito y deseados en la base de datos antes de cerrar sesión
-    await this.carritoService.guardarCarritoEnBD();
-    await this.carritoService.guardarDeseadosEnBD();
-
-    // Cerrar sesión
-    this.autenticacionService.logout();
-    this.isLoggedIn = false;
-    this.userName = '';
-    this.showToast('Sesión cerrada');
+    const loading = await this.loadingController.create({
+      message: 'Cerrando sesión...',
+      cssClass: 'custom-loading',
+      spinner: 'crescent',
+    });
+    await loading.present();
+  
+    try {
+      // Guardar carrito y deseados en la base de datos antes de cerrar sesión
+      await this.guardarCarrito();
+      await this.guardarDeseados();
+  
+      // Cerrar sesión
+      this.autenticacionService.logout();
+      this.isLoggedIn = false;
+      this.userName = '';
+      this.userEmail = '';
+      this.userPicture = '';
+      this.isDarkMode = false;
+  
+      this.showToast('Sesión cerrada');
+    } catch (error) {
+      this.showToast('Error al cerrar sesión');
+    } finally {
+      await loading.dismiss();
+    }
   }
+
+  async guardarCarrito() {
+    const cartData = JSON.stringify(this.carritoService.getCartItems()); // Obtener los datos del carrito
+  
+    try {
+      await this.autenticacionService.guardarCarrito(cartData);
+      console.log('Carrito guardado exitosamente.');
+    } catch (error) {
+      console.error('Error al guardar el carrito:', error);
+    }
+  }
+
+  async guardarDeseados() {
+    const wishData = JSON.stringify(this.carritoService.getWishlistItems()); // Obtener los datos de la lista de deseados
+  
+    try {
+      await this.autenticacionService.guardarWishList(wishData);
+      console.log('Lista de deseados guardada exitosamente.');
+    } catch (error) {
+      console.error('Error al guardar la lista de deseados:', error);
+    }
+  }
+  
+  
 
   recuperarContrasena() {
     this.showToast('Funcionalidad de recuperación aún no implementada');
@@ -198,18 +254,22 @@ export class TabsPage implements OnInit {
 
   removeItem(item: CarritoItem) {
     this.carritoService.removeFromCart(item.id);
+    this.guardarCarrito();
   }
 
   clearCart() {
     this.carritoService.clearCart();
+    this.guardarCarrito();
   }
 
   decreaseQuantity(item: CarritoItem) {
     this.carritoService.decreaseQuantity(item.id);
+    this.guardarCarrito();
   }
 
   increaseQuantity(item: CarritoItem) {
     this.carritoService.increaseQuantity(item.id);
+    this.guardarCarrito();
   }
 
   calculateTotal() {
@@ -276,24 +336,25 @@ export class TabsPage implements OnInit {
       this.showToast('Por favor, completa todos los campos.');
       return;
     }
-
+  
     if (this.password !== this.repassword) {
       this.showToast('Las contraseñas no coinciden.');
       return;
     }
-
-    this.autenticacionService.registrar(this.nombre, this.apellido, this.email, this.password).subscribe(response => {
-      if (response.success) {
-        this.isLoggedIn = true;
-        this.userName = response.usuario.nombre + " " + response.usuario.apellido;
-        this.userEmail = response.usuario.email;
-        this.userPicture = response.usuario.imagen;
-        this.showToast('Registro exitoso');
-        this.closeRegisterModal();
-      } else {
-        this.showToast('Error al registrar');
-      }
-    });
+  
+    this.autenticacionService.registrar(this.nombre, this.apellido, this.email, this.password)
+      .subscribe(response => {
+        if (response && response.message === "Client registered successfully") {
+          this.isLoggedIn = true;
+          this.autenticacionService.login(this.email, this.password);
+          this.showToast('Registro exitoso');
+          this.closeRegisterModal();
+        } else {
+          this.showToast('Error al registrar');
+        }
+      }, error => {
+        this.showToast('Error en el registro: ' + error.message);
+      });
   }
   async exitLoginModal() {
     this.isLoginModalOpen = false;

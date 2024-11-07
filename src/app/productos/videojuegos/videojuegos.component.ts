@@ -4,6 +4,7 @@ import { Videojuego } from '../../models/videojuego';
 import { Consola } from '../../models/consola';
 import { Dispositivo } from '../../models/dispositivo';
 import { NavigationExtras, Router } from '@angular/router';
+import { LoadingController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-videojuegos',
@@ -20,15 +21,36 @@ export class VideojuegosComponent  implements OnInit {
   isScrolled = false;
   lastScrollTop = 0;
 
-  constructor(private productoService: ProductoService, private router: Router) {}
+  constructor(private productoService: ProductoService, private router: Router, private loadingController: LoadingController, private toastController: ToastController) {}
 
-  ngOnInit() {
-    // Cargar datos de videojuegos
-    this.productoService.cargarVideojuegosDesdeAPI().subscribe((videojuegos) => {
-      this.cargarRecomendados(videojuegos);
-      this.cargarGeneros(videojuegos);
+  async ngOnInit() {
+    const loading = await this.loadingController.create({
+      message: 'Cargando consolas...',
+      cssClass: 'custom-loading',
+      spinner: 'crescent', // Spinner con estilo moderno
     });
-    
+    await loading.present();
+  
+    this.productoService.cargarVideojuegosDesdeAPI().subscribe({
+      next: async (games) => {
+        this.cargarRecomendados(games);
+        this.cargarGeneros(games);
+        await loading.dismiss();
+      },
+      error: async () => {
+        await loading.dismiss();
+        this.showToast('Error al cargar los videojuegos');
+      }
+    });
+  }
+
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      position: 'bottom'
+    });
+    toast.present();
   }
 
   cargarRecomendados(videojuegos: Videojuego[]) {
@@ -74,12 +96,8 @@ export class VideojuegosComponent  implements OnInit {
   }
 
   async verDetalles(producto: Videojuego) {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        producto: JSON.stringify(producto)
-      }
-    };
-    this.router.navigate(['/tabs/detalle'], navigationExtras);
+    this.productoService.setProductoDetalles(producto);
+    this.router.navigate(['/tabs/detalle']);
   }
   
 

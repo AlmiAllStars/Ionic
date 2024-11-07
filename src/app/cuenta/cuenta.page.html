@@ -14,9 +14,9 @@
   <!-- Foto de perfil -->
   <div class="profile-header">
     <ion-avatar class="profile-avatar">
-      <img [src]="user?.imagen ? user?.imagen : 'assets/icon/default-avatar.png'" alt="User Avatar" />
+      <img [src]="user?.picture ? user?.picture : 'assets/icon/default-avatar.png'" alt="User Avatar" />
     </ion-avatar>
-    <ion-button fill="clear" (click)="openEditModal('imagen')">Cambiar foto</ion-button>
+    <ion-button fill="clear" (click)="openEditModal('picture')">Cambiar foto</ion-button>
   </div>
 
   <!-- Datos del usuario -->
@@ -40,7 +40,7 @@
 
     <ion-item lines="full" (click)="openEditModal('telefono')">
       <ion-label>Teléfono</ion-label>
-      <ion-text>{{ user?.telefono }}</ion-text>
+      <ion-text>{{ user?.telefono !== -1 ? user?.telefono : '' }}</ion-text>
       <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
     </ion-item>
 
@@ -52,7 +52,7 @@
 
     <ion-item lines="full" (click)="openEditModal('codigoPostal')">
       <ion-label>Código Postal</ion-label>
-      <ion-text>{{ user?.codigoPostal || 'Sin código postal' }}</ion-text>
+      <ion-text>{{ user?.codigoPostal !== -1 ? user?.codigoPostal : '' }}</ion-text>
       <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
     </ion-item>
 
@@ -85,11 +85,11 @@
         <!-- Campos de edición específicos según el tipo de campo -->
         <ion-list *ngIf="fieldToEdit">
           <!-- Mostrar solo el valor actual para los campos inmutables -->
-          <ion-item>
+          <ion-item *ngIf="fieldToEdit !== 'contraseña'">
             <ion-label>{{ fieldToEdit | titlecase }}</ion-label>
             <ion-text>{{ user?.[fieldToEdit] }}</ion-text>
-
           </ion-item>
+          
           <!-- Editar Nombre, Apellido, Dirección y Código Postal -->
           <ion-item *ngIf="fieldToEdit === 'nombre' || fieldToEdit === 'apellido' || fieldToEdit === 'direccion' || fieldToEdit === 'codigoPostal'">
             <ion-label position="stacked">Nuevo {{ fieldToEdit | titlecase }}</ion-label>

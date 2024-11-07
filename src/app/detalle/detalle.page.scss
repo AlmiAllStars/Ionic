@@ -24,7 +24,13 @@ ion-header {
     display: inline-block;
     animation: scroll-title 10s linear infinite; 
   }
-  
+
+  .custom-loading {
+    --background: rgba(0, 0, 0, 0.8); // Fondo oscuro
+    --spinner-color: #FFD700; // Color dorado para el spinner
+    color: white;
+    font-size: 1.2rem;
+  }
   
   
   .product-container {

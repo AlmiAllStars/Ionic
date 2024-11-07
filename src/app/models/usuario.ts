@@ -6,8 +6,8 @@ export interface Usuario {
     contraseña: string;
     telefono: number;
     fechaRegistro: Date;
-    imagen?: Blob; 
     direccion?: string;
-    codigoPostal?: string;
+    codigoPostal?: number;
+    picture?: string;
   }
   
