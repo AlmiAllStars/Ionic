@@ -118,6 +118,8 @@ export class PedidosPage implements OnInit {
 
     try {
       await this.productoService.obtenerProductoPorId(item.id);
+      this.cerrarModal();
+      await loading.dismiss();
       this.router.navigate(['tabs/detalle']); // Navegar después de cargar el producto
     } catch (error) {
       this.showToast('Error al cargar el producto.');
