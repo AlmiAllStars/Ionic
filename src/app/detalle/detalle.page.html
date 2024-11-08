@@ -4,8 +4,8 @@
       <ion-back-button defaultHref="" (click)="volver()"></ion-back-button>
     </ion-buttons>
     <ion-title #gameTitle class="game-title">
-      <div *ngIf="producto.name.length < 15">{{ producto.name }}</div>
-      <div *ngIf="producto.name.length >= 15" class="scrolling-text">{{ producto.name }}</div>
+      <div *ngIf="productoService.productoActual.name.length < 15">{{ productoService.productoActual.name }}</div>
+      <div *ngIf="productoService.productoActual.name.length >= 15" class="scrolling-text">{{ productoService.productoActual.name }}</div>
     </ion-title>    
   </ion-toolbar>
 </ion-header>
@@ -14,83 +14,51 @@
   <div class="product-container">
     <!-- Imagen del producto -->
     <div class="product-image">
-      <img [src]="'../../assets/gallery/public/' + producto.picture" alt="{{ producto.name }}" />
+      <img [src]="'../../assets/gallery/public/' + productoService.productoActual.picture" alt="{{ productoService.productoActual.name }}" />
     </div>
 
     <!-- Descripción y detalles -->
     <div class="product-details">
-      <!-- Descripción del producto -->
-      <p class="product-description">{{ producto.description }}</p>
+      <p class="product-description">{{ productoService.productoActual.description }}</p>
 
       <!-- Secciones de información y compra -->
       <div class="info-purchase-container">
-        <!-- Información del juego -->
         <div class="game-info">
           <!-- Información específica de Videojuego -->
-          <ng-container *ngIf="tipoProducto === 'videojuego'">
-            <p><strong>Plataforma:</strong></p>
-            <p>Nintendo</p>
-            
+          <ng-container *ngIf="productoService.productoActual.productType === 'videogame'">
+            <p><strong>Plataforma:</strong> Nintendo</p>
             <p><strong>Géneros:</strong></p>
-            <ng-container *ngFor="let genre of producto.genres">
+            <ng-container *ngFor="let genre of productoService.productoActual.genres">
               <p>{{ genre }}</p>
             </ng-container>
-            
             <p><strong>PEGI:</strong></p>
             <a href="https://pegi.info/" target="_blank">
-              <img [src]="'../../assets/pegi/' + producto.pegi + '.png'" alt="PEGI {{ producto.pegi }}" />
+              <img [src]="'../../assets/pegi/' + productoService.productoActual.pegi + '.png'" alt="PEGI {{ productoService.productoActual.pegi }}" />
             </a>
-            
             <p><strong>Fecha lanzamiento:</strong></p>
-            <p>{{ producto.release_date | date }}</p>
+            <p>{{ productoService.productoActual.release_date | date }}</p>
           </ng-container>
-        
+
           <!-- Información específica de Consola -->
-          <ng-container *ngIf="tipoProducto === 'consola'">
-            <p><strong>Modelo:</strong></p>
-            <p>{{ consola.model }}</p>
-        
-            <p><strong>Marca:</strong></p>
-            <p>{{ consola.brand }}</p>
-        
-            <p><strong>Generación:</strong></p>
-            <p>{{ consola.generation }}</p>
-        
-            <p><strong>Disco:</strong></p>
-            <p>{{ consola.disk }} GB</p>
-        
-            <p><strong>Cantidad:</strong></p>
-            <p>{{ consola.quantity }}</p>
+          <ng-container *ngIf="productoService.productoActual.productType === 'console'">
+            <p><strong>Modelo:</strong> {{ productoService.productoActual.model }}</p>
+            <p><strong>Marca:</strong> {{ productoService.productoActual.brand }}</p>
+            <p><strong>Generación:</strong> {{ productoService.productoActual.generation }}</p>
+            <p><strong>Disco:</strong> {{ productoService.productoActual.disk }} GB</p>
+            <p><strong>Cantidad:</strong> {{ productoService.productoActual.stock }}</p>
           </ng-container>
-        
+
           <!-- Información específica de Dispositivo -->
-          <ng-container *ngIf="tipoProducto === 'dispositivo'">
-            <p><strong>Tipo:</strong></p>
-            <p>{{ device.type }}</p>
-        
-            <p><strong>Modelo:</strong></p>
-            <p>{{ device.model }}</p>
-        
-            <p><strong>Marca:</strong></p>
-            <p>{{ device.brand }}</p>
-        
-            <p><strong>Procesador:</strong></p>
-            <p>{{ device.processor }}</p>
-        
-            <p><strong>Memoria:</strong></p>
-            <p>{{ device.memory }} GB</p>
-        
-            <p><strong>Pantalla:</strong></p>
-            <p>{{ device.screen }}</p>
-        
-            <p><strong>Cámara:</strong></p>
-            <p>{{ device.camera }}</p>
-        
-            <p><strong>Batería:</strong></p>
-            <p>{{ device.battery }} mAh</p>
-        
-            <p><strong>Disco:</strong></p>
-            <p>{{ device.disk }} GB</p>
+          <ng-container *ngIf="productoService.productoActual.productType === 'device'">
+            <p><strong>Tipo:</strong> {{ productoService.productoActual.type }}</p>
+            <p><strong>Modelo:</strong> {{ productoService.productoActual.model }}</p>
+            <p><strong>Marca:</strong> {{ productoService.productoActual.brand }}</p>
+            <p><strong>Procesador:</strong> {{ productoService.productoActual.processor }}</p>
+            <p><strong>Memoria:</strong> {{ productoService.productoActual.memory }} GB</p>
+            <p><strong>Pantalla:</strong> {{ productoService.productoActual.screen }}</p>
+            <p><strong>Cámara:</strong> {{ productoService.productoActual.camera }}</p>
+            <p><strong>Batería:</strong> {{ productoService.productoActual.battery }} mAh</p>
+            <p><strong>Disco:</strong> {{ productoService.productoActual.disk }} GB</p>
           </ng-container>
         </div>
 
@@ -99,11 +67,11 @@
           <div class="buy-section">
             <div class="price-container">
               <div class="price-label">
-                <span [ngStyle]="{ color: producto.quantity > 0 ? '#008000' : '#b22222' }">
-                  {{ producto.quantity > 0 ? 'Comprar' : 'Agotado' }}
+                <span [ngStyle]="{ color: productoService.productoActual.stock > 0 ? '#008000' : '#b22222' }">
+                  {{ productoService.productoActual.stock > 0 ? 'Comprar' : 'Agotado' }}
                 </span>
               </div>
-              <div class="price" *ngIf="producto.quantity > 0">
+              <div class="price" *ngIf="productoService.productoActual.stock > 0">
                 <span class="whole">{{ wholePrice }}</span>
                 <span class="fraction">{{ fractionPrice }}€</span>
               </div>
@@ -111,32 +79,28 @@
             <ion-button 
               color="success" 
               (click)="anadirAlCarrito()" 
-              [disabled]="producto.quantity <= 0">
+              [disabled]="productoService.productoActual.stock <= 0">
               <ion-icon name="cart"></ion-icon>
             </ion-button>
           </div>
-          
-        
+
           <!-- Segunda línea: Try Section -->
           <div class="try-section">
             <div class="price-container">
               <div class="try-label">
-                <span *ngIf="tipoProducto === 'videojuego'">Pruebalo</span>
-                <span *ngIf="tipoProducto !== 'videojuego'">Reparar</span>
+                <span *ngIf="productoService.productoActual.productType === 'videogame'">Pruebalo</span>
+                <span *ngIf="productoService.productoActual.productType !== 'videogame'">Reparar</span>
               </div>
-          
-              <!-- Precio solo visible para videojuegos -->
-              <div *ngIf="tipoProducto === 'videojuego'" class="tryPrice">
+              <div *ngIf="productoService.productoActual.productType === 'videogame'" class="tryPrice">
                 <span class="tryWhole">5</span>
                 <span class="tryFraction">€/semana</span>
               </div>
             </div>
-          
-            <ion-button color="tertiary" (click)="tipoProducto === 'videojuego' ? alquilar() : reparar()">
-              <ion-icon [name]="tipoProducto === 'videojuego' ? 'time-outline' : 'build-outline'"></ion-icon>
+            <ion-button color="tertiary" (click)="productoService.productoActual.productType === 'videogame' ? alquilar() : reparar()">
+              <ion-icon [name]="productoService.productoActual.productType === 'videogame' ? 'time-outline' : 'build-outline'"></ion-icon>
             </ion-button>
           </div>
-        
+
           <!-- Tercera línea: Notify Section -->
           <div class="notify-section">
             <ion-button color="danger" (click)="addWish()">
@@ -144,7 +108,6 @@
             </ion-button>            
           </div>
         </div>
-            
       </div>
     </div>
   </div>

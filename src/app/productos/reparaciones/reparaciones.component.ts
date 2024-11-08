@@ -18,6 +18,8 @@ export class ReparacionesComponent  implements OnInit {
   gravedadProblema: string = '';
   emailContacto: string = '';
 
+  reparacionesActivas: any[] = [];
+
   tipos = [
     { id: 1, name: 'PlayStation', type: 'consola', imageUrl: '../../assets/gallery/public/consola02.jpg' },
     { id: 2, name: 'Xbox', type: 'consola', imageUrl: '../../assets/gallery/public/consola07.jpg' },
@@ -53,9 +55,42 @@ export class ReparacionesComponent  implements OnInit {
     // Prellenar el email de contacto con el email del usuario actual
     this.autenticacionService.obtenerUsuario().subscribe(usuario => {
       this.emailContacto = usuario.email;
+      this.cargarReparacionesActivas();
     });
     this.selectedType = 'consola';
     this.filtrarTipos();
+  }
+
+  estadosReparacion: string[] = ['Pendiente', 'En progreso', 'Esperando Piezas', 'Listo para Recoger'];
+
+  // Método para calcular el progreso basado en el estado
+  calcularProgreso(status: string): number {
+    const index = this.estadosReparacion.indexOf(status);
+    return index >= 0 ? (index + 1) / this.estadosReparacion.length : 0;
+  }
+
+  cargarReparacionesActivas() {
+    this.autenticacionService.obtenerReparacionesActivas().subscribe(reparaciones => {
+      console.log('Reparaciones activas:', reparaciones);
+      this.reparacionesActivas = reparaciones;
+    });
+  }
+
+  enviarFormulario() {
+    const reparacionData = {
+      description: this.detalleProblema
+    };
+
+    this.autenticacionService.crearReparacion(reparacionData).subscribe(
+      response => {
+        console.log('Reparación creada:', response);
+        // Opcional: Recargar la lista de reparaciones activas
+        this.cargarReparacionesActivas();
+      },
+      error => {
+        console.error('Error al crear la reparación:', error);
+      }
+    );
   }
 
   filtrarTipos() {
@@ -72,13 +107,8 @@ export class ReparacionesComponent  implements OnInit {
     this.modeloSeleccionado = null;
   }
 
-  enviarFormulario() {
-    console.log('Solicitud enviada:', {
-      tipo: this.tipoSeleccionado,
-      modelo: this.modeloSeleccionado,
-      detalleProblema: this.detalleProblema,
-      gravedadProblema: this.gravedadProblema,
-      emailContacto: this.emailContacto
-    });
+
+  esEstadoActual(status: string, estado: string): boolean {
+    return this.estadosReparacion.indexOf(estado) <= this.estadosReparacion.indexOf(status);
   }
 }

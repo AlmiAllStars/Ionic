@@ -6,6 +6,7 @@ import { Consola } from '../models/consola';
 import { Dispositivo } from '../models/dispositivo';
 import { tap, catchError, map } from 'rxjs/operators';
 import { CarritoItem } from '../models/carrito-item';
+import { CarritoService } from './carrito.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ import { CarritoItem } from '../models/carrito-item';
 export class ProductoService {
   private apiUrl = 'http://3.229.96.79:8080/juegalmi/ws/';
   private usarDatosLocales = false; // Cambiar a `false` para usar la API real
-  private productoDetalles: any = null;
+  private productoId: number | null = null;
+  productoActual: any = null;
 
   // Subjects y Observables para cada tipo de producto
   private videojuegosSubject = new BehaviorSubject<Videojuego[]>([]);
@@ -25,7 +27,7 @@ export class ProductoService {
   private dispositivosSubject = new BehaviorSubject<Dispositivo[]>([]);
   public dispositivos$: Observable<Dispositivo[]> = this.dispositivosSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private carritoService: CarritoService) {}
 
   private cargarDatosLocales(): Observable<any> {
     return this.http.get('assets/data/data.json').pipe(
@@ -96,49 +98,41 @@ export class ProductoService {
     return new BehaviorSubject(dispositivo).asObservable();
   }
 
-  // Funcion que recibe un item de carrito y lo busca en los arrays de productos y devuelve el (videojuego, consola o dispositivo) que corresponda
-  async abrirProducto(item: CarritoItem): Promise<Videojuego | Consola | Dispositivo | undefined> {
-    if (item.tipo === 'videojuego' && this.videojuegosSubject.value.length === 0) {
-      // Cargar videojuegos si no están cargados
-      await this.cargarVideojuegosDesdeAPI().toPromise();
+  setProductoActual(producto: any): void {
+    this.productoActual = producto;
+  }
 
-    } else if (item.tipo === 'consola' && this.consolasSubject.value.length === 0) {
-      // Cargar consolas si no están cargadas
-      await this.cargarConsolasDesdeAPI().toPromise();
-      console.log('Consolas cargadas', this.consolasSubject.value);
-    } else if (item.tipo === 'dispositivo' && this.dispositivosSubject.value.length === 0) {
-      // Cargar dispositivos si no están cargados
-      await this.cargarDispositivosDesdeAPI().toPromise();
-    }
-  
-    // Ahora que los datos deberían estar cargados, buscar el producto específico
-    if (item.tipo === 'videojuego') {
-      return this.videojuegosSubject.value.find(v => v.id === item.id);
-    } else if (item.tipo === 'consola') {
-      return this.consolasSubject.value.find(c => c.id === item.id);
-    } else if (item.tipo === 'dispositivo') {
-      return this.dispositivosSubject.value.find(d => d.id === item.id);
+  getProductoActual(): any {
+    return this.productoActual;
+  }
+
+  obtenerProductoPorId(id: number): Promise<any> {
+    const url = `http://3.229.96.79:8080/juegalmi/ws/product/${id}`;
+    return this.http.get<any>(url).pipe(
+      tap((producto) => {
+        this.productoActual = producto; // Guardar automáticamente el producto actual
+        this.tipoProducto = producto.productType;
+      })
+    ).toPromise(); // Convierte a Promise para usar con async/await
+  }
+
+  tipoProducto: 'videojuego' | 'consola' | 'dispositivo' | null = null;
+
+  agregarProductoAlCarrito(tipoOperacion: 'order' | 'rent') {
+    if (this.productoActual && this.tipoProducto) {
+      this.carritoService.addToCart(this.productoActual, this.tipoProducto, tipoOperacion);
     } else {
-      return undefined;
+      console.error('Producto actual o tipo de producto no definidos.');
     }
   }
-  
-  
-  setProductoDetalles(producto: any) {
-    this.productoDetalles = null;
-    this.productoDetalles = producto;
-    sessionStorage.removeItem('productoDetalles');
-    sessionStorage.setItem('productoDetalles', JSON.stringify(producto));
-  }
-  
-  getProductoDetalles(): any {
-    if (!this.productoDetalles) {
-      const data = sessionStorage.getItem('productoDetalles');
-      this.productoDetalles = data ? JSON.parse(data) : null;
+
+  agregarProductoAWishlist() {
+    if (this.productoActual) {
+      this.carritoService.addToWishlist(this.productoActual);
+    } else {
+      console.error('Producto actual no definido.');
     }
-    return this.productoDetalles;
   }
-  
-  
+
 }
 

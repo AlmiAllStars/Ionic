@@ -85,34 +85,29 @@ export class TramitarPage implements OnInit {
   }
 
   async abrirProducto(item: CarritoItem) {
-    // Muestra un indicador de carga
     const loading = await this.loadingController.create({
-      message: 'Cargando producto...'
+      message: 'Cargando producto...',
+      spinner: 'crescent',
     });
     await loading.present();
-    // Esperamos a cargar el producto para cerrar el loading
-    const producto = await this.productoService.abrirProducto(item);
-    await loading.dismiss();
 
-    if (producto) {
-      // Cierra el modal antes de navegar
-      
-      const navigationExtras: NavigationExtras = {
-        queryParams: {
-          producto: JSON.stringify(producto)
-        }
-      };
-      
-      // Navegar a la página de detalle con los detalles del producto
-      this.router.navigate(['/tabs/detalle'], navigationExtras);
-    } else {
-      // Mostrar un mensaje de error
-      const toast = await this.toastController.create({
-        message: 'No se ha podido cargar el producto',
-        duration: 2000
-      });
-      toast.present();
+    try {
+      await this.productoService.obtenerProductoPorId(item.id);
+      this.router.navigate(['tabs/detalle']); // Navegar después de cargar el producto
+    } catch (error) {
+      this.showToast('Error al cargar el producto.');
+    } finally {
+      await loading.dismiss(); // Ocultar el indicador de carga
     }
+  }
+
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'top',
+    });
+    await toast.present();
   }
 
   comprarAhora() {
@@ -148,10 +143,12 @@ export class TramitarPage implements OnInit {
   }
 
   async procesarPedido() {
-    console.log(this.carritoService.getCartItems());
+
     try {
       await this.carritoService.procesarCarrito();
+      await this.autenticacionService.guardarCarrito(JSON.stringify(this.carritoService.getCartItems()));
       console.log('Compra finalizada con éxito.');
+      this.cancelar();
     } catch (error) {
       console.error('Error al finalizar la compra:', error);
     }

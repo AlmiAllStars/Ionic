@@ -391,29 +391,20 @@ export class TabsPage implements OnInit {
 
   // Ahora vamos a hacer una funcion abrirProducto que desde la imagen en el carrito de un producto, lo busca en nuestros 3 arrays y lo abre en la pagina de detalle
   async abrirProducto(item: CarritoItem) {
-    // Muestra un indicador de carga
     const loading = await this.loadingController.create({
-      message: 'Cargando producto...'
+      message: 'Cargando producto...',
+      spinner: 'crescent',
     });
     await loading.present();
-    // Esperamos a cargar el producto para cerrar el loading
-    const producto = await this.productoService.abrirProducto(item);
-    await loading.dismiss();
 
-    if (producto) {
-      // Cierra el modal antes de navegar
-      await this.exitCarritoModal();
-      
-      const navigationExtras: NavigationExtras = {
-        queryParams: {
-          producto: JSON.stringify(producto)
-        }
-      };
-      
-      // Navegar a la página de detalle con los detalles del producto
-      this.router.navigate(['/tabs/detalle'], navigationExtras);
-    } else {
-      this.showToast('Producto no encontrado');
+    try {
+      await this.productoService.obtenerProductoPorId(item.id);
+      this.router.navigate(['tabs/detalle']); // Navegar después de cargar el producto
+    } catch (error) {
+      this.showToast('Error al cargar el producto.');
+    } finally {
+      await loading.dismiss(); // Ocultar el indicador de carga
     }
   }
+
 }

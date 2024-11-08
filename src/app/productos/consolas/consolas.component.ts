@@ -84,11 +84,23 @@ export class ConsolasComponent implements OnInit {
     }
   }
 
-  verDetalles(consola: Consola) {
-    this.productoService.setProductoDetalles(consola);
-    this.router.navigate(['/tabs/detalle']);
+  async verDetalles(consola: Consola) {
+    const loading = await this.loadingController.create({
+      message: 'Cargando producto...',
+      spinner: 'crescent',
+    });
+    await loading.present();
+
+    try {
+      await this.productoService.obtenerProductoPorId(consola.id);
+      this.router.navigate(['tabs/detalle']); // Navegar después de cargar el producto
+    } catch (error) {
+      this.showToast('Error al cargar el producto.');
+    } finally {
+      await loading.dismiss(); // Ocultar el indicador de carga
+    }
   }
-  
+
 
   truncateText(text: string, maxLength: number): string {
     if (text.length <= maxLength) {

@@ -177,6 +177,12 @@ export class AutenticacionService {
     return this.http.post<any>(this.apiUrl + 'register', nuevoCliente); // URL de tu backend
   }
 
+  obtenerReparacionesActivas(): Observable<any[]> {
+    const url = `http://3.229.96.79:8080/juegalmi/ws/secure/client/activeRepairs`;
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    return this.http.get<any[]>(url, { headers });
+  }
+
   obtenerUsuario(): Observable<Usuario> {
     return of(this.usuarioActual); // Devuelve el usuario de prueba
   }
@@ -264,5 +270,11 @@ export class AutenticacionService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
 
     return this.http.get<any>(`${this.apiUrl}secure/sales`, { headers });
+  }
+
+  crearReparacion(data: { description: string }): Observable<any> {
+    const url = `http://3.229.96.79:8080/juegalmi/ws/secure/repair`;
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    return this.http.post<any>(url, data, { headers });
   }
 }

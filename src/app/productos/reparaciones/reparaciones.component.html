@@ -1,4 +1,25 @@
 
+<ion-list *ngIf="reparacionesActivas.length > 0">
+  <ion-item *ngFor="let reparacion of reparacionesActivas">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ reparacion.nombre }}</ion-card-title>
+        <ion-card-subtitle>{{ reparacion.description | slice:0:100 }}...</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="progress-steps">
+          <div *ngFor="let estado of estadosReparacion; let i = index" 
+               [class.active]="esEstadoActual(reparacion.status, estado)">
+            <div class="step-circle">{{ i + 1 }}</div>
+            <div class="step-label">{{ estado }}</div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
+</ion-list>
+
+  
   <ion-segment [(ngModel)]="selectedType" (ionChange)="filtrarTipos()">
     <ion-segment-button value="consola">
       Consolas

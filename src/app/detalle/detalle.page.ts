@@ -15,61 +15,48 @@ import { ProductoService } from '../services/producto.service';
   styleUrls: ['./detalle.page.scss'],
 })
 export class DetallePage implements OnInit {
-  producto!: Videojuego;
-  device!: Dispositivo;
-  consola!: Consola;
   wholePrice: string = '';
   fractionPrice: string = '';
-  tipoProducto: 'videojuego' | 'consola' | 'dispositivo' = "videojuego";
 
   constructor(
-    private route: ActivatedRoute,
     private carritoService: CarritoService,
     private router: Router,
     private autenticacionService: AutenticacionService,
     private toastController: ToastController,
     private tabsPage: TabsPage,
-    private productoService: ProductoService
+    public productoService: ProductoService
   ) {}
 
   ngOnInit() {
-    const data = this.productoService.getProductoDetalles();
+    const producto = this.productoService.getProductoActual();
+    console.log('Producto actual:', this.productoService.productoActual);
   
-    if (data) {
-      if (data.generation) {
-        this.producto = data;
-        this.consola = data;
-        this.tipoProducto = 'consola';
-      } else if (data.genres) {
-        this.tipoProducto = 'videojuego';
-        this.producto = data;
-      } else {
-        this.producto = data;
-        this.tipoProducto = 'dispositivo';
-        this.device = data;
-      }
-    } else {
+    if (!producto) {
       this.showToast('No se encontraron detalles del producto.');
-      this.router.navigate(['/tabs/home']); // Redirigir si no hay datos
+      this.router.navigate(['/tabs/home']);
+      return;
     }
   
     this.formatPrice();
   }
   
+  
 
 
   formatPrice() {
-    const priceParts = this.producto.price.toString().split('.');
+    const priceParts = this.productoService.productoActual.price.toString().split('.');
     this.wholePrice = priceParts[0];
-    this.fractionPrice = priceParts[1];
+    console.log('Precio:', this.wholePrice);
+    this.fractionPrice = priceParts[1] || '00'; // Asegurar que siempre haya dos dígitos
   }
+  
 
   async anadirAlCarrito() {
     // Verifica si el usuario está logueado
     this.autenticacionService.verificarSesion().subscribe(async (response) => {
       if (response.success) {
         // El usuario está logueado, añade el producto al carrito
-        this.carritoService.addToCart(this.producto, this.tipoProducto, "order");
+        this.productoService.agregarProductoAlCarrito('order');
         this.guardarCarrito();
         this.showToast('Producto añadido al carrito');
         this.volver();
@@ -108,7 +95,7 @@ export class DetallePage implements OnInit {
     this.autenticacionService.verificarSesion().subscribe(async (response) => {
       if (response.success) {
         // El usuario está logueado, añade el producto al carrito
-        this.carritoService.addToCart(this.producto, this.tipoProducto, "rent");
+        this.productoService.agregarProductoAlCarrito('rent');
         this.guardarCarrito();
         this.showToast('Producto añadido al carrito');
         this.volver();
@@ -136,7 +123,7 @@ export class DetallePage implements OnInit {
   }
 
   addWish() {
-    this.carritoService.addToWishlist(this.producto);
+    this.productoService.agregarProductoAWishlist();
     this.showToast('Producto añadido a la lista de deseos');
   }
 }

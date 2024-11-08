@@ -96,10 +96,21 @@ export class VideojuegosComponent  implements OnInit {
   }
 
   async verDetalles(producto: Videojuego) {
-    this.productoService.setProductoDetalles(producto);
-    this.router.navigate(['/tabs/detalle']);
+    const loading = await this.loadingController.create({
+      message: 'Cargando producto...',
+      spinner: 'crescent',
+    });
+    await loading.present();
+
+    try {
+      await this.productoService.obtenerProductoPorId(producto.id);
+      this.router.navigate(['tabs/detalle']); // Navegar después de cargar el producto
+    } catch (error) {
+      this.showToast('Error al cargar el producto.');
+    } finally {
+      await loading.dismiss(); // Ocultar el indicador de carga
+    }
   }
-  
 
   truncateText(text: string, maxLength: number): string {
     if (text.length <= maxLength) {

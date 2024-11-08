@@ -110,30 +110,19 @@ export class PedidosPage implements OnInit {
   }
 
   async abrirProducto(item: CarritoItem) {
-    console.log('Abriendo producto:', item);
-    // Muestra un indicador de carga
     const loading = await this.loadingController.create({
-      message: 'Cargando producto...'
+      message: 'Cargando producto...',
+      spinner: 'crescent',
     });
     await loading.present();
-    // Esperamos a cargar el producto para cerrar el loading
-    const producto = await this.productoService.abrirProducto(item);
-    await loading.dismiss();
 
-    if (producto) {
-      // Cierra el modal antes de navegar
-      await this.cerrarModal();
-      
-      const navigationExtras: NavigationExtras = {
-        queryParams: {
-          producto: JSON.stringify(producto)
-        }
-      };
-      
-      // Navegar a la página de detalle con los detalles del producto
-      this.router.navigate(['/tabs/detalle'], navigationExtras);
-    } else {
-      this.showToast('Producto no encontrado');
+    try {
+      await this.productoService.obtenerProductoPorId(item.id);
+      this.router.navigate(['tabs/detalle']); // Navegar después de cargar el producto
+    } catch (error) {
+      this.showToast('Error al cargar el producto.');
+    } finally {
+      await loading.dismiss(); // Ocultar el indicador de carga
     }
   }
 
