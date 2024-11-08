@@ -13,6 +13,7 @@
         <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
       </ion-button>
 
+
       <ion-button *ngIf="isLoggedIn" (click)="openCart()">
         <div *ngIf="cartItems.length > 0" class="cart-length">{{ cartItems.length }}</div>
         <ion-icon class="cart" slot="icon-only" name="cart-outline"></ion-icon>
@@ -170,8 +171,9 @@
               <div class="user-info">
                 <div class="profile-picture">
                   <img [src]="userPicture || '../../assets/icon/default-avatar.png'" alt="User Avatar" />
-                  <ion-icon name="camera-outline" class="camera-icon"></ion-icon>
+                  <ion-icon name="camera-outline" class="camera-icon" (click)="onCameraIconClick()"></ion-icon>
                 </div>
+                
                 
                 <div class="user-details">
                   <h2>{{ userName }}</h2>

@@ -9,7 +9,7 @@ import { AutenticacionService } from './autenticacion.service';
   providedIn: 'root'
 })
 export class CarritoService {
-  private apiUrl = 'http://3.229.96.79:8080/juegalmi/ws/';
+  private apiUrl = 'http://54.165.248.142:8080/juegalmi/ws/';
   private cartSubject = new BehaviorSubject<CarritoItem[]>([]);
   private wishlistSubject = new BehaviorSubject<Producto[]>([]);
 

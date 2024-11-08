@@ -7,6 +7,7 @@ import { CarritoItem } from '../models/carrito-item';
 import { Producto } from '../models/producto';
 import { AutenticacionService } from '../services/autenticacion.service';
 import { NavigationExtras, Router } from '@angular/router';
+import { Motion } from '@capacitor/motion';
 
 @Component({
   selector: 'app-tabs',
@@ -20,7 +21,7 @@ export class TabsPage implements OnInit {
     { title: 'Tiendas', icon: 'storefront', path: 'tiendas' },
     { title: 'About-us', icon: 'information-circle', path: 'about-us' }
   ];
-
+  shakeThreshold = 15; // Umbral para detectar agitación
   isDarkMode = false;
   notifications: any[] = [];
   products: Producto[] = [];
@@ -71,6 +72,8 @@ export class TabsPage implements OnInit {
     await this.verificarSesion();
     if (this.returningtoModal) this.isLoginModalOpen = true;
     this.returningtoModal = false;
+
+    this.initShakeListener();
   }
 
   async ionViewWillEnter() {
@@ -79,6 +82,59 @@ export class TabsPage implements OnInit {
       this.isLoginModalOpen = true; // Abre el modal si returningtoModal es true
       this.returningtoModal = false; // Restablece returningtoModal a false
     }
+  }
+
+  initShakeListener() {
+    Motion.addListener('accel', (event) => {
+      if (this.isShake(event.acceleration)) {
+        console.log('¡Dispositivo agitado! Mostrando un producto aleatorio...');
+        this.mostrarProductoAleatorio();
+      }
+    });
+  }
+
+  async mostrarProductoAleatorio() {
+    const randomProduct = this.productoService.getRandomProduct();
+  
+    const loading = await this.loadingController.create({
+      message: 'Cargando producto aleatorio...',
+      spinner: 'crescent',
+    });
+    await loading.present();
+    if (!randomProduct) {
+      this.showToast('No se encontró ningún producto.');
+      await loading.dismiss();
+      return;
+    }
+    try {
+      await this.productoService.obtenerProductoPorId(randomProduct.id);
+      this.router.navigate(['tabs/detalle']); // Navegar después de cargar el producto
+    } catch (error) {
+      this.showToast('Error al cargar el producto.');
+    } finally {
+      await loading.dismiss(); // Ocultar el indicador de carga
+    }
+  }
+
+  simulateShake() {
+    console.log('Simulación de agitación activada.');
+  
+    // Simular un evento de aceleración alto (agitación)
+    const mockAcceleration = {
+      acceleration: { x: 16, y: 0, z: 0 }, // Valores que superan el umbral
+      timestamp: Date.now()
+    };
+  
+    // Llama a la función `isShake` con los valores simulados
+    if (this.isShake(mockAcceleration.acceleration)) {
+      console.log('¡Mock de agitación detectado!');
+      this.mostrarProductoAleatorio();
+    }
+  }
+
+  isShake(acceleration: { x: number; y: number; z: number }): boolean {
+    const { x, y, z } = acceleration;
+    return Math.abs(x) > this.shakeThreshold || Math.abs(y) > this.shakeThreshold || Math.abs(z) > this.shakeThreshold;
   }
 
   initializeDarkPalette(isDark: any) {
@@ -216,7 +272,14 @@ export class TabsPage implements OnInit {
     }
   }
   
-  
+  async onCameraIconClick() {
+    try {
+      const response = await this.autenticacionService.captureAndUploadPicture();
+      console.log('Upload successful:', response);
+    } catch (error) {
+      console.error('Failed to upload picture:', error);
+    }
+  }
 
   recuperarContrasena() {
     this.showToast('Funcionalidad de recuperación aún no implementada');

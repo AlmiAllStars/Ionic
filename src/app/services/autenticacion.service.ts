@@ -4,6 +4,9 @@ import { Usuario } from '../models/usuario';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CarritoService } from './carrito.service';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
+import { Geolocation } from '@capacitor/geolocation';
 
 
 @Injectable({
@@ -11,7 +14,7 @@ import { CarritoService } from './carrito.service';
 })
 export class AutenticacionService {
   constructor(private http: HttpClient, private carritoService: CarritoService) {}
-  private apiUrl = 'http://3.229.96.79:8080/juegalmi/ws/';
+  private apiUrl = 'http://54.165.248.142:8080/juegalmi/ws/';
 
   private usuarioActual: Usuario = {
     id: 0,
@@ -29,7 +32,7 @@ export class AutenticacionService {
   private idNuevo = 2;
 
   login(email: string, password: string): Observable<any> {
-    const url = 'http://3.229.96.79:8080/api/login'; // Endpoint de login
+    const url = 'http://54.165.248.142:8080/api/login'; // Endpoint de login
     const body = { email, password };
   
     return this.http.post<any>(url, body).pipe(
@@ -75,7 +78,7 @@ export class AutenticacionService {
 
 
   private getUserDataByEmail(email: string): Observable<any> {
-    const url = `http://3.229.96.79:8080/juegalmi/ws/secure/clientbyEmail`;
+    const url = this.apiUrl + `secure/clientbyEmail`;
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
     return this.http.post<any>(url, { email }, { headers });
   }
@@ -178,7 +181,7 @@ export class AutenticacionService {
   }
 
   obtenerReparacionesActivas(): Observable<any[]> {
-    const url = `http://3.229.96.79:8080/juegalmi/ws/secure/client/activeRepairs`;
+    const url = this.apiUrl + `secure/client/activeRepairs`;
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
     return this.http.get<any[]>(url, { headers });
   }
@@ -194,7 +197,7 @@ export class AutenticacionService {
       ...userData, // Los datos a actualizar
     };
 
-    return this.http.put<any>('http://3.229.96.79:8080/juegalmi/ws/secure/editClient', body, { headers });
+    return this.http.put<any>('http://54.165.248.142:8080/juegalmi/ws/secure/editClient', body, { headers });
   }
 
   actualizarUsuarioLocal(fieldToEdit: string, editValue: any): void {
@@ -230,18 +233,32 @@ export class AutenticacionService {
   async guardarCarrito(cartData: string): Promise<void> {
     try {
       const usuarioActualId = this.getId();
-
+  
       if (!usuarioActualId) {
         throw new Error('No hay usuario autenticado.');
       }
-
-      await this.actualizarUsuario(usuarioActualId, { chart: cartData }).toPromise();
-
+  
+      // Obtener la ubicación actual
+      const coordinates = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+      });
+  
+      const locationData = {
+        latitude: coordinates.coords.latitude,
+        longitude: coordinates.coords.longitude,
+      };
+  
+      // Enviar el carrito junto con la ubicación al backend
+      await this.actualizarUsuario(usuarioActualId, {
+        cart: cartData,
+        ...locationData,
+      }).toPromise();
+  
       // Actualizar localmente el carrito
       this.actualizarUsuarioLocal('cart', cartData);
-      console.log('Carrito guardado en la base de datos.');
+      console.log('Carrito y ubicación guardados en la base de datos.');
     } catch (error) {
-      console.error('Error al guardar el carrito en la base de datos', error);
+      console.error('Error al guardar el carrito y la ubicación en la base de datos', error);
       throw error;
     }
   }
@@ -273,8 +290,34 @@ export class AutenticacionService {
   }
 
   crearReparacion(data: { description: string }): Observable<any> {
-    const url = `http://3.229.96.79:8080/juegalmi/ws/secure/repair`;
+    const url = this.apiUrl + `secure/repair`;
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
     return this.http.post<any>(url, data, { headers });
+  }
+
+  async captureAndUploadPicture() {
+    try {
+      // Abrir la cámara del dispositivo
+      const photo = await Camera.getPhoto({
+        resultType: CameraResultType.Uri, // Obtiene la URI de la imagen
+        source: CameraSource.Camera, // Abre directamente la cámara
+        quality: 90,
+      });
+
+      if (!photo || !photo.webPath) {
+        throw new Error('No photo captured');
+      }
+
+      // Crear un FormData para enviar la imagen al servidor
+      const formData = new FormData();
+      const blob = await fetch(photo.webPath).then((r) => r.blob());
+      formData.append('picture', blob, 'client-picture.jpg');
+
+      // Subir la imagen al servidor
+      return this.http.post('https://your-server.com/juegalmi/ws/secure/uploadClientPicture', formData).toPromise();
+    } catch (error) {
+      console.error('Error capturing or uploading picture:', error);
+      throw error;
+    }
   }
 }

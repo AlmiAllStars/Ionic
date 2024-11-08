@@ -12,7 +12,7 @@ import { CarritoService } from './carrito.service';
   providedIn: 'root'
 })
 export class ProductoService {
-  private apiUrl = 'http://3.229.96.79:8080/juegalmi/ws/';
+  private apiUrl = 'http://54.165.248.142:8080/juegalmi/ws/';
   private usarDatosLocales = false; // Cambiar a `false` para usar la API real
   private productoId: number | null = null;
   productoActual: any = null;
@@ -107,7 +107,7 @@ export class ProductoService {
   }
 
   obtenerProductoPorId(id: number): Promise<any> {
-    const url = `http://3.229.96.79:8080/juegalmi/ws/product/${id}`;
+    const url = this.apiUrl + `product/${id}`;
     return this.http.get<any>(url).pipe(
       tap((producto) => {
         this.productoActual = producto; // Guardar automáticamente el producto actual
@@ -132,6 +132,25 @@ export class ProductoService {
     } else {
       console.error('Producto actual no definido.');
     }
+  }
+
+  getRandomProduct(): { id: number; name: string } | null {
+    const videojuegos = this.videojuegosSubject.value;
+    const consolas = this.consolasSubject.value;
+    const dispositivos = this.dispositivosSubject.value;
+
+    const allProducts = [
+      ...videojuegos.map(v => ({ id: v.id, name: v.name })),
+      ...consolas.map(c => ({ id: c.id, name: c.name })),
+      ...dispositivos.map(d => ({ id: d.id, name: d.name }))
+    ];
+
+    if (allProducts.length === 0) {
+      return null;
+    }
+
+    const randomIndex = Math.floor(Math.random() * allProducts.length);
+    return allProducts[randomIndex];
   }
 
 }

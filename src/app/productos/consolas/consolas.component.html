@@ -1,5 +1,12 @@
 <!-- Campo de búsqueda -->
-<ion-searchbar placeholder="Buscar en {{ seccionActual }}" (ionInput)="buscar($event)"></ion-searchbar>
+<ion-toolbar>
+  <ion-searchbar placeholder="Buscar en {{ seccionActual }}" (ionInput)="buscar($event)"></ion-searchbar>
+  <ion-buttons slot="end">
+    <ion-button (click)="iniciarBusquedaPorVoz()">
+      <ion-icon name="mic-outline"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
 
 <!-- Resultados de búsqueda -->
 <div *ngIf="busquedaActiva">
