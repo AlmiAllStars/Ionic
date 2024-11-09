@@ -19,7 +19,12 @@ export class VideojuegosComponent  implements OnInit {
   busquedaActiva = false;
 
   isScrolled = false;
+  recognition: any;
   lastScrollTop = 0;
+  baseUrl: string = 'http://54.165.248.142:8080';
+
+  // Imagen por defecto para manejar imágenes rotas
+  defaultImage: string = '../../assets/images/default-placeholder.png';
 
   constructor(private productoService: ProductoService, private router: Router, private loadingController: LoadingController, private toastController: ToastController) {}
 
@@ -42,7 +47,14 @@ export class VideojuegosComponent  implements OnInit {
         this.showToast('Error al cargar los videojuegos');
       }
     });
+    this.initSpeechRecognition();
   }
+
+  handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = this.defaultImage; // Imagen de prueba si no se encuentra la original
+  }  
+
 
   async showToast(message: string) {
     const toast = await this.toastController.create({
@@ -85,6 +97,53 @@ export class VideojuegosComponent  implements OnInit {
     } else {
       this.resultadosBusqueda = [];
     }
+  }
+
+  initSpeechRecognition() {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  
+    if (SpeechRecognition) {
+      this.recognition = new SpeechRecognition();
+      this.recognition.lang = 'es-ES'; // Configura el idioma para español
+      this.recognition.continuous = false; // Solo escucha una frase a la vez
+      this.recognition.interimResults = false; // Resultados finales, no parciales
+  
+      this.recognition.onresult = (event: any) => {
+        const voiceQuery = event.results[0][0].transcript;
+        console.log('Texto detectado:', voiceQuery);
+        this.buscarPorVoz(voiceQuery); // Llamar a la función de búsqueda con el texto
+      };
+  
+      this.recognition.onerror = (event: any) => {
+        console.error('Error en reconocimiento de voz:', event.error);
+        this.showToast('Error en el reconocimiento de voz. Inténtalo de nuevo.');
+      };
+    } else {
+      console.error('El navegador no soporta SpeechRecognition');
+      this.showToast('El reconocimiento de voz no es compatible con tu navegador.');
+    }
+  }
+
+  iniciarBusquedaPorVoz() {
+    if (this.recognition) {
+      this.recognition.start();
+    } else {
+      this.showToast('No se puede iniciar la búsqueda por voz.');
+    }
+  }
+  
+  buscarPorVoz(voiceQuery: string) {
+    // Obtener el input de búsqueda (ion-searchbar)
+    const searchbar = document.querySelector('ion-searchbar');
+    if (searchbar) {
+      searchbar.value = voiceQuery; // Escribir la consulta en el input
+      // Crear un evento manual para simular que el usuario escribió
+      const event = new CustomEvent('ionInput', { detail: { value: voiceQuery } });
+      searchbar.dispatchEvent(event);
+    }
+  
+    // Ahora, llama directamente a la función `buscar`
+    this.buscar({ target: { value: voiceQuery } });
   }
 
   // Detectar el scroll y ocultar/mostrar el menú según la dirección

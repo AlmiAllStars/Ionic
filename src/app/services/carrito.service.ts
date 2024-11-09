@@ -16,7 +16,7 @@ export class CarritoService {
   public cart$: Observable<CarritoItem[]> = this.cartSubject.asObservable();
   public wishlist$: Observable<Producto[]> = this.wishlistSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,) { }
 
   addToCart(product: Producto, tipo: 'videojuego' | 'consola' | 'dispositivo', tipoOperacion: 'order' | 'rent') {
     const currentCart = this.cartSubject.value;
@@ -68,6 +68,11 @@ export class CarritoService {
     this.cartSubject.next([...currentCart]);
   }
 
+  vaciar() {
+    this.cartSubject.next([]);
+    this.wishlistSubject.next([]);
+  }
+
   increaseQuantity(productId: number) {
     const currentCart = this.cartSubject.value;
     const itemIndex = currentCart.findIndex(item => item.id === productId);
@@ -104,7 +109,6 @@ export class CarritoService {
     }
   }
 
-  
 
   // Guardar lista de deseados en la base de datos
   async guardarDeseadosEnBD() {

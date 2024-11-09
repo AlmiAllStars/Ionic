@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, Observable, of, retry, switchMap } from 'rxjs';
 import { Usuario } from '../models/usuario';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -15,6 +15,8 @@ import { Geolocation } from '@capacitor/geolocation';
 export class AutenticacionService {
   constructor(private http: HttpClient, private carritoService: CarritoService) {}
   private apiUrl = 'http://54.165.248.142:8080/juegalmi/ws/';
+  private usuarioActualSubject = new BehaviorSubject<any | null>(null);
+  usuarioActual$ = this.usuarioActualSubject.asObservable();
 
   private usuarioActual: Usuario = {
     id: 0,
@@ -64,6 +66,7 @@ export class AutenticacionService {
 
               this.carritoService.cargarCarritoDesdeJson(usuarioCompleto.chart);
               this.carritoService.cargarWishlistDesdeJson(usuarioCompleto.wishlist);
+              this.usuarioActualSubject.next(this.usuarioActual);
   
               return { success: true, usuario: this.usuarioActual };
             })
@@ -121,8 +124,13 @@ export class AutenticacionService {
       fechaRegistro: new Date(),
       direccion: '',
       codigoPostal: -1,
-      picture: ''
-    };         // Limpia el usuario actual en memoria
+      picture: '',
+    }; 
+    
+    
+    this.carritoService.vaciar();// Limpia el usuario actual en memoria
+
+    this.usuarioActualSubject.next(this.usuarioActual);
   
     // Si tienes otros datos relacionados con el usuario o la sesión, asegúrate de eliminarlos también
     localStorage.clear();  // Limpia todo el localStorage (opcional, si no tienes otros datos persistentes)
@@ -156,6 +164,7 @@ export class AutenticacionService {
           };
           this.carritoService.cargarCarritoDesdeJson(usuarioCompleto.chart);
           this.carritoService.cargarWishlistDesdeJson(usuarioCompleto.wishlist);
+          this.usuarioActualSubject.next(this.usuarioActual);
 
           return { success: true, usuario: this.usuarioActual };
         }),
@@ -177,8 +186,25 @@ export class AutenticacionService {
       password: password,
     };
   
-    return this.http.post<any>(this.apiUrl + 'register', nuevoCliente); // URL de tu backend
+    return this.http.post<any>(this.apiUrl + 'register', nuevoCliente).pipe(
+      switchMap(response => {
+        console.log('Respuesta del registro:', response);
+        if (response && response.message === "Client registered successfully") {
+          // Realiza el login automáticamente
+          return of(null).pipe(
+            delay(500), // Retraso de 1 segundo
+            switchMap(() => this.login(email, password)),
+            retry(2), // Reintenta el login hasta 2 veces en caso de error
+            map(loginResponse => ({ success: true, loginResponse }))
+          );
+        } else {
+          return of({ success: false, error: 'Error al registrar' });
+        }
+      }),
+      catchError(error => of({ success: false, error: error.error?.error || 'Error en el servidor' }))
+    );
   }
+  
 
   obtenerReparacionesActivas(): Observable<any[]> {
     const url = this.apiUrl + `secure/client/activeRepairs`;
@@ -205,6 +231,8 @@ export class AutenticacionService {
     if (fieldToEdit && this.usuarioActual) {
       (this.usuarioActual as any)[fieldToEdit] = editValue;
     }
+
+    this.usuarioActualSubject.next(this.usuarioActual);
   }
   
 
@@ -248,15 +276,18 @@ export class AutenticacionService {
         longitude: coordinates.coords.longitude,
       };
   
-      // Enviar el carrito junto con la ubicación al backend
-      await this.actualizarUsuario(usuarioActualId, {
-        cart: cartData,
-        ...locationData,
-      }).toPromise();
-  
-      // Actualizar localmente el carrito
-      this.actualizarUsuarioLocal('cart', cartData);
-      console.log('Carrito y ubicación guardados en la base de datos.');
+      try {
+        await this.actualizarUsuario(usuarioActualId, {
+          chart: cartData,
+          ...locationData,
+        }).toPromise();
+      
+        // Solo se ejecuta si actualizarUsuario no lanza error
+        this.actualizarUsuarioLocal('cart', cartData);
+        console.log('Carrito y ubicación guardados en la base de datos.');
+      } catch (error) {
+        console.error('Error al actualizar usuario:', error);
+      }
     } catch (error) {
       console.error('Error al guardar el carrito y la ubicación en la base de datos', error);
       throw error;
@@ -275,7 +306,7 @@ export class AutenticacionService {
 
       // Actualizar localmente el carrito
       this.actualizarUsuarioLocal('cart', wishData);
-      console.log('Carrito guardado en la base de datos.');
+      console.log('WishList guardado en la base de datos.');
     } catch (error) {
       console.error('Error al guardar el carrito en la base de datos', error);
       throw error;

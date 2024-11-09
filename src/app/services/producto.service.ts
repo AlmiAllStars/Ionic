@@ -111,6 +111,7 @@ export class ProductoService {
     return this.http.get<any>(url).pipe(
       tap((producto) => {
         this.productoActual = producto; // Guardar automáticamente el producto actual
+        console.log('Producto actual:', this.productoActual);
         this.tipoProducto = producto.productType;
       })
     ).toPromise(); // Convierte a Promise para usar con async/await

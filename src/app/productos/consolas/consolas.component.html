@@ -12,7 +12,7 @@
 <div *ngIf="busquedaActiva">
   <div *ngIf="resultadosBusqueda.length > 0" class="resultados-busqueda">
     <ion-card *ngFor="let resultado of resultadosBusqueda" class="resultado-item" (click)="verDetalles(resultado)">
-      <img [src]="'../../assets/gallery/public/' + resultado.picture" alt="Resultado" />
+      <img (error)="handleImageError($event)" [src]="baseUrl + resultado.picture" alt="Resultado"/>
       <ion-card-content>
         <h3>{{ truncateText(resultado.name, 30) }}</h3>
         <p>{{ resultado.brand }}</p>
@@ -32,7 +32,11 @@
     <swiper-container loop="true" slides-per-view="1" class="novedades-carousel">
       <swiper-slide *ngFor="let novedad of novedades">
         <ion-card (click)="verDetalles(novedad)">
-          <img [src]="'../../assets/gallery/public/' + novedad.picture" alt="Novedad" />
+          <img 
+            [src]="baseUrl + novedad.picture" 
+            alt="Novedad" 
+            (error)="handleImageError($event)" 
+          />
           <ion-card-content>
             <h2>{{ novedad.name }}</h2>
             <p>{{ truncateText(novedad.description, 110) }}</p>
@@ -47,7 +51,7 @@
     <swiper-container loop="true" slides-per-view="3" class="brand-carousel">
       <swiper-slide *ngFor="let item of brand.items">
         <ion-card class="brand-card" (click)="verDetalles(item)">
-          <img [src]="'../../assets/gallery/public/' + item.picture" alt="Item" />
+          <img [src]="baseUrl + item.picture" alt="Item"  (error)="handleImageError($event)"  />
           <ion-card-content>
             <h3>{{ truncateText(item.name, 30) }}</h3>
           </ion-card-content>

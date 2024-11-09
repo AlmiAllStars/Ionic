@@ -17,6 +17,10 @@ import { ProductoService } from '../services/producto.service';
 export class DetallePage implements OnInit {
   wholePrice: string = '';
   fractionPrice: string = '';
+  baseUrl: string = 'http://54.165.248.142:8080';
+
+  // Imagen por defecto para manejar imágenes rotas
+  defaultImage: string = '../../assets/images/default-placeholder.png';
 
   constructor(
     private carritoService: CarritoService,
@@ -40,7 +44,11 @@ export class DetallePage implements OnInit {
     this.formatPrice();
   }
   
-  
+  handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = this.defaultImage; // Imagen de prueba si no se encuentra la original
+  }  
+
 
 
   formatPrice() {

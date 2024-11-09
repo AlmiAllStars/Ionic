@@ -30,6 +30,7 @@ export class TabsPage implements OnInit {
   total = 0;
   isCartOpen = false;
   isWishlistModalOpen = false;
+  user: any;
 
   isLoginModalOpen = false;
   isLoggedIn = false;
@@ -39,6 +40,11 @@ export class TabsPage implements OnInit {
   email: string = '';
   password: string = '';
   returningtoModal = false;
+
+  baseUrl: string = 'http://54.165.248.142:8080';
+
+  // Imagen por defecto para manejar imágenes rotas
+  defaultImage: string = '../../assets/images/default-placeholder.png';
 
   constructor(
     private navController: NavController,
@@ -68,6 +74,20 @@ export class TabsPage implements OnInit {
       this.wishlistItems = wishlistItems;
     });
 
+    this.autenticacionService.usuarioActual$.subscribe(usuario => {
+      if (usuario) {
+        this.isLoggedIn = true;
+        this.userName = usuario.nombre + " " + usuario.apellido;
+        this.userEmail = usuario.email;
+        this.userPicture = usuario.picture;
+        this.user = usuario;
+      } else {
+        this.isLoggedIn = false;
+      }
+    });
+
+    
+
     // Verificar la sesión y cargar el carrito y deseados si está logueado
     await this.verificarSesion();
     if (this.returningtoModal) this.isLoginModalOpen = true;
@@ -75,6 +95,13 @@ export class TabsPage implements OnInit {
 
     this.initShakeListener();
   }
+
+  handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    console.log('Imagen no encontrada:', imgElement.src);
+    imgElement.src = this.defaultImage; // Imagen de prueba si no se encuentra la original
+  }  
+
 
   async ionViewWillEnter() {
     await this.verificarSesion();
@@ -164,21 +191,17 @@ export class TabsPage implements OnInit {
   }
 
   async login() {
-    // Muestra un indicador de carga con un estilo personalizado
     const loading = await this.loadingController.create({
       message: 'Iniciando sesión...',
       cssClass: 'custom-loading',
-      spinner: 'crescent', // Spinner más moderno
+      spinner: 'crescent',
     });
     await loading.present();
   
     try {
       const response = await this.autenticacionService.login(this.email, this.password).toPromise();
       if (response.success) {
-        this.isLoggedIn = true; 
-        this.userName = response.usuario.nombre + " " + response.usuario.apellido;
-        this.userEmail = response.usuario.email;
-        this.userPicture = response.usuario.imagen;
+        this.isLoggedIn = true;
         this.showToast('Inicio de sesión exitoso');
         this.closeLoginModal();
       } else {
@@ -187,7 +210,7 @@ export class TabsPage implements OnInit {
     } catch (error) {
       this.showToast('Ocurrió un error al iniciar sesión');
     } finally {
-      await loading.dismiss(); // Asegúrate de siempre cerrar el loading
+      await loading.dismiss();
     }
   }
   
@@ -204,10 +227,7 @@ export class TabsPage implements OnInit {
       next: async (response) => {
         this.isLoggedIn = response.success;
         if (this.isLoggedIn) {
-          this.userName = response.usuario.nombre + " " + response.usuario.apellido;
-          this.userEmail = response.usuario.email;
-          this.userPicture = response.usuario.imagen;
-          this.isDarkMode = localStorage.getItem('darkMode') === 'true';
+
         } else {
           this.isDarkMode = false;
         }
@@ -237,11 +257,6 @@ export class TabsPage implements OnInit {
       // Cerrar sesión
       this.autenticacionService.logout();
       this.isLoggedIn = false;
-      this.userName = '';
-      this.userEmail = '';
-      this.userPicture = '';
-      this.isDarkMode = false;
-  
       this.showToast('Sesión cerrada');
     } catch (error) {
       this.showToast('Error al cerrar sesión');
@@ -406,19 +421,19 @@ export class TabsPage implements OnInit {
     }
   
     this.autenticacionService.registrar(this.nombre, this.apellido, this.email, this.password)
-      .subscribe(response => {
-        if (response && response.message === "Client registered successfully") {
+      .subscribe(async response => {
+        if (response.success) {
           this.isLoggedIn = true;
-          this.autenticacionService.login(this.email, this.password);
-          this.showToast('Registro exitoso');
+          this.showToast('Registro y login exitosos');
           this.closeRegisterModal();
         } else {
-          this.showToast('Error al registrar');
+          this.showToast(response.error || 'Error al registrar');
         }
       }, error => {
-        this.showToast('Error en el registro: ' + error.message);
+        this.showToast('Error en el registro: ' + error);
       });
   }
+
   async exitLoginModal() {
     this.isLoginModalOpen = false;
     this.returningtoModal = true;
@@ -462,6 +477,7 @@ export class TabsPage implements OnInit {
 
     try {
       await this.productoService.obtenerProductoPorId(item.id);
+      this.closeCart();
       this.router.navigate(['tabs/detalle']); // Navegar después de cargar el producto
     } catch (error) {
       this.showToast('Error al cargar el producto.');

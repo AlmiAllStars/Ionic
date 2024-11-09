@@ -14,7 +14,7 @@
   <div class="product-container">
     <!-- Imagen del producto -->
     <div class="product-image">
-      <img [src]="'../../assets/gallery/public/' + productoService.productoActual.picture" alt="{{ productoService.productoActual.name }}" />
+      <img (error)="handleImageError($event)" [src]="baseUrl + productoService.productoActual.picture" alt="{{ productoService.productoActual.name }}" />
     </div>
 
     <!-- Descripción y detalles -->
@@ -33,7 +33,7 @@
             </ng-container>
             <p><strong>PEGI:</strong></p>
             <a href="https://pegi.info/" target="_blank">
-              <img [src]="'../../assets/pegi/' + productoService.productoActual.pegi + '.png'" alt="PEGI {{ productoService.productoActual.pegi }}" />
+              <img (error)="handleImageError($event)" [src]="'../../assets/pegi/' + productoService.productoActual.pegi + '.png'" alt="PEGI {{ productoService.productoActual.pegi }}" />
             </a>
             <p><strong>Fecha lanzamiento:</strong></p>
             <p>{{ productoService.productoActual.release_date | date }}</p>

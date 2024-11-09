@@ -1,11 +1,18 @@
  <!-- Campo de búsqueda -->
- <ion-searchbar placeholder="Buscar en {{ seccionActual }}" (ionInput)="buscar($event)"></ion-searchbar>
+ <ion-toolbar>
+  <ion-searchbar placeholder="Buscar en {{ seccionActual }}" (ionInput)="buscar($event)"></ion-searchbar>
+  <ion-buttons slot="end">
+    <ion-button (click)="iniciarBusquedaPorVoz()">
+      <ion-icon name="mic-outline"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
 
  <!-- Resultados de búsqueda -->
  <div *ngIf="busquedaActiva">
   <div *ngIf="resultadosBusqueda.length > 0" class="resultados-busqueda">
     <ion-card *ngFor="let resultado of resultadosBusqueda" class="resultado-item" (click)="verDetalles(resultado)">
-      <img [src]="'../../assets/gallery/public/' + resultado.picture" alt="Resultado" />
+      <img (error)="handleImageError($event)" [src]="baseUrl + resultado.picture" alt="Resultado" />
       <ion-card-content>
         <h3>{{ truncateText(resultado.name, 30) }}</h3>
         <p>{{ resultado.genres }}</p>
@@ -14,7 +21,7 @@
     </ion-card>
   </div>
   <div *ngIf="resultadosBusqueda.length === 0" class="no-resultados">
-    <img src="assets/images/sinResultados.png" alt="Sin resultados" class="imagen-sin-resultados" />
+    <img (error)="handleImageError($event)" src="assets/images/sinResultados.png" alt="Sin resultados" class="imagen-sin-resultados" />
     <p>No se encontro nada.</p>
   </div>
 </div>
@@ -25,7 +32,7 @@
      <swiper-container loop="true" slides-per-view="1" class="recomendados-carousel">
        <swiper-slide *ngFor="let recomendado of recomendados">
          <ion-card (click)="verDetalles(recomendado)">
-           <img [src]="'../../assets/gallery/public/' + recomendado.picture" alt="Recomendado" />
+           <img (error)="handleImageError($event)" [src]="baseUrl + recomendado.picture" alt="Recomendado" />
            <ion-card-content>
              <h2>{{ recomendado.name }}</h2>
              <p>{{ truncateText(recomendado.description, 110) }}</p>
@@ -40,7 +47,7 @@
      <swiper-container loop="true" slides-per-view="3" class="genero-carousel">
        <swiper-slide *ngFor="let item of genero.items">
          <ion-card class="genero-card" (click)="verDetalles(item)">
-           <img [src]="'../../assets/gallery/public/' + item.picture" alt="Item" />
+           <img (error)="handleImageError($event)" [src]="baseUrl + item.picture" alt="Item" />
            <ion-card-content>
              <h3>{{ truncateText(item.name, 30) }}</h3>
            </ion-card-content>

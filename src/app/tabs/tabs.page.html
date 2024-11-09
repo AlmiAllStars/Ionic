@@ -64,11 +64,11 @@
         <ion-content class="ion-padding">
           <h1 class="cart-title">Carro</h1>
           <div class="delivery-info">
-            <p>Entregar en <span class="address">48960</span></p>
+            <p *ngIf="user?.codigoPostal !== -1">Entregar en <span class="address">{{ user?.codigoPostal }}</span></p>
           </div>
           <div *ngIf="cartItems && cartItems.length > 0">
             <div *ngFor="let item of cartItems" class="cart-item">
-              <img [src]="'http://3.229.96.79:8080/' + item.picture" alt="{{ item.name }}" class="item-img" (click)="abrirProducto(item)">
+              <img (error)="handleImageError($event)" [src]="baseUrl + item.picture" alt="{{ item.name }}" class="item-img" (click)="abrirProducto(item)">
               <div class="item-details">
                 <h3>{{ item.name }}</h3>
                 <p>
@@ -170,7 +170,7 @@
               <!-- Información del usuario -->
               <div class="user-info">
                 <div class="profile-picture">
-                  <img [src]="userPicture || '../../assets/icon/default-avatar.png'" alt="User Avatar" />
+                  <img (error)="handleImageError($event)" [src]="baseUrl + userPicture || '../../assets/icon/default-avatar.png'" alt="User Avatar" />
                   <ion-icon name="camera-outline" class="camera-icon" (click)="onCameraIconClick()"></ion-icon>
                 </div>
                 

@@ -14,7 +14,7 @@
   <!-- Foto de perfil -->
   <div class="profile-header">
     <ion-avatar class="profile-avatar">
-      <img [src]="user?.picture ? user?.picture : 'assets/icon/default-avatar.png'" alt="User Avatar" />
+      <img (error)="handleImageError($event)" [src]="baseUrl + user?.picture || '../../assets/icon/default-avatar.png'" alt="User Avatar" />
     </ion-avatar>
     <ion-button fill="clear" (click)="openEditModal('picture')">Cambiar foto</ion-button>
   </div>
@@ -87,7 +87,7 @@
           <!-- Mostrar solo el valor actual para los campos inmutables -->
           <ion-item *ngIf="fieldToEdit !== 'contraseña'">
             <ion-label>{{ fieldToEdit | titlecase }}</ion-label>
-            <ion-text>{{ user?.[fieldToEdit] }}</ion-text>
+            <ion-text>{{ user?.[fieldToEdit] !== -1 ? user?.[fieldToEdit] : '' }}</ion-text>
           </ion-item>
           
           <!-- Editar Nombre, Apellido, Dirección y Código Postal -->

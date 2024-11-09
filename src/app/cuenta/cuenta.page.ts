@@ -17,6 +17,8 @@ export class CuentaPage implements OnInit {
   newPassword: string = '';
   confirmPassword: string = '';
   editValue: string = '';
+  defaultImage: string = '../../assets/images/default-placeholder.png';
+  baseUrl: string = 'http://54.165.248.142:8080';
 
   constructor(
     private modalController: ModalController,
@@ -45,6 +47,12 @@ export class CuentaPage implements OnInit {
     this.newPassword = '';
     this.confirmPassword = '';
   }
+
+  
+  handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = this.defaultImage; // Imagen de prueba si no se encuentra la original
+  }  
 
   async saveChanges() {
     if (this.fieldToEdit) {

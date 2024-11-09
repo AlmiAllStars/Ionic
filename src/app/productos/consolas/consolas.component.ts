@@ -16,6 +16,10 @@ export class ConsolasComponent implements OnInit {
   seccionActual = 'consolas';
   busquedaActiva = false;
   recognition: any;
+  baseUrl: string = 'http://54.165.248.142:8080';
+
+  // Imagen por defecto para manejar imágenes rotas
+  defaultImage: string = '../../assets/images/default-placeholder.png';
   
 
 
@@ -42,6 +46,11 @@ export class ConsolasComponent implements OnInit {
     });
     this.initSpeechRecognition();
   }
+
+  handleImageError(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = this.defaultImage; // Imagen de prueba si no se encuentra la original
+  }  
 
   initSpeechRecognition() {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
