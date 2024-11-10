@@ -119,7 +119,7 @@
     <!-- Modal de Usuario -->
     <ion-modal [isOpen]="isLoginModalOpen" (didDismiss)="closeLoginModal()" class="login-modal">
       <ng-template>
-        <ion-content class="ion-padding login-modal-content">
+        <ion-content class="ion-padding login-modal-content"  fullscreen scroll-y="false">
           <!-- Verifica si el usuario está logueado o no -->
           <div *ngIf="!isLoggedIn; else loggedInContent">
             <div class="modal-header">
@@ -202,10 +202,6 @@
                   <ion-label>Mis Pedidos</ion-label>
                 </ion-item>
                 <ion-item button>
-                  <ion-icon name="notifications-outline" slot="start"></ion-icon>
-                  <ion-label>Configurar Notificaciones</ion-label>
-                </ion-item>
-                <ion-item button>
                   <ion-icon name="trash-outline" slot="start"></ion-icon>
                   <ion-label>Quiero darme de baja</ion-label>
                 </ion-item>
@@ -230,7 +226,7 @@
     </ion-modal>
 
     <ion-modal [isOpen]="isRegisterModalOpen" (didDismiss)="closeRegisterModal()" class="register-modal">
-      <ng-template>
+      <ng-template fullscreen scroll-y="false">
         <ion-content class="ion-padding register-modal-content">
           <div class="modal-header">
             <img src="../../assets/icon/LogoJuegalmi.png" alt="Juegalmi Logo" class="logo" />

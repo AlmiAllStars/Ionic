@@ -17,7 +17,10 @@
         <img (error)="handleImageError($event)" [src]="baseUrl + pedido.productos[0].picture" alt="Imagen del producto">
       </ion-thumbnail>
       <ion-label>
-        <h2>Pedido #{{ pedido.id }}</h2>
+        <h2>
+          Pedido #{{ pedido.id }}
+          <span *ngIf="!pedido.processed" style="color: red;">sin procesar</span>
+        </h2>        
         <p>Fecha: {{ pedido.fecha | date: 'mediumDate' }}</p>
         <p>Total: {{ pedido.total | currency }}</p>
       </ion-label>

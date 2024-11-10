@@ -93,7 +93,6 @@ export class CarritoService {
     try {
       const cartItems: CarritoItem[] = cartJson ? JSON.parse(cartJson) : [];
       this.cartSubject.next(cartItems);
-      console.log('Carrito cargado desde JSON.');
     } catch (error) {
       console.error('Error al cargar el carrito desde JSON', error);
     }
@@ -103,7 +102,6 @@ export class CarritoService {
     try {
       const wishlistItems: Producto[] = wishlistJson ? JSON.parse(wishlistJson) : [];
       this.wishlistSubject.next(wishlistItems);
-      console.log('Lista de deseados cargada desde JSON.');
     } catch (error) {
       console.error('Error al cargar la lista de deseados desde JSON', error);
     }
@@ -137,7 +135,6 @@ export class CarritoService {
   
   async procesarCarrito(): Promise<void> {
     const cartItems = this.getCartItems(); // Obtener los elementos del carrito
-    console.log('Elementos del carrito:', cartItems);
     const operationsData = cartItems.map(item => ({
       id_product: item.id,
       type: item.operationType, // Usamos el nuevo campo operationType

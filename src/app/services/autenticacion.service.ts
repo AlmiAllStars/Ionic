@@ -135,7 +135,6 @@ export class AutenticacionService {
     // Si tienes otros datos relacionados con el usuario o la sesión, asegúrate de eliminarlos también
     localStorage.clear();  // Limpia todo el localStorage (opcional, si no tienes otros datos persistentes)
   
-    console.log('Sesión cerrada y datos limpiados');
   }
   
 
@@ -158,7 +157,7 @@ export class AutenticacionService {
             contraseña: '', // No almacenar la contraseña
             telefono: usuarioCompleto.phone || 0,
             fechaRegistro: new Date(usuarioCompleto.registration_date),
-            direccion: '',
+            direccion: usuarioCompleto.address || '',
             codigoPostal: usuarioCompleto.postal_code || -1,
             picture: usuarioCompleto.picture || ''
           };
@@ -188,7 +187,6 @@ export class AutenticacionService {
   
     return this.http.post<any>(this.apiUrl + 'register', nuevoCliente).pipe(
       switchMap(response => {
-        console.log('Respuesta del registro:', response);
         if (response && response.message === "Client registered successfully") {
           // Realiza el login automáticamente
           return of(null).pipe(
@@ -284,7 +282,6 @@ export class AutenticacionService {
       
         // Solo se ejecuta si actualizarUsuario no lanza error
         this.actualizarUsuarioLocal('cart', cartData);
-        console.log('Carrito y ubicación guardados en la base de datos.');
       } catch (error) {
         console.error('Error al actualizar usuario:', error);
       }
@@ -306,7 +303,6 @@ export class AutenticacionService {
 
       // Actualizar localmente el carrito
       this.actualizarUsuarioLocal('cart', wishData);
-      console.log('WishList guardado en la base de datos.');
     } catch (error) {
       console.error('Error al guardar el carrito en la base de datos', error);
       throw error;

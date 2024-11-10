@@ -24,12 +24,13 @@ ion-list {
   .progress-steps {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start; /* Alineación superior */
     margin: 16px 0;
-  
+    
     div {
       text-align: center;
       flex: 1;
+      position: relative; /* Necesario para ::after */
   
       .step-circle {
         width: 24px;
@@ -47,6 +48,11 @@ ion-list {
         margin-top: 8px;
         font-size: 12px;
         color: #666;
+        height: 32px; /* Ajusta la altura según necesites para 2 líneas de texto */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
       }
   
       &.active .step-circle {
@@ -62,11 +68,11 @@ ion-list {
     div:not(:last-child)::after {
       content: '';
       position: absolute;
-      width: 100%;
+      width: calc(100% + 16px); /* Añadir longitud al conector */
       height: 2px;
       background-color: #ccc;
-      top: 12px;
-      left: 50%;
+      top: 12px; /* Centra la línea con respecto a los círculos */
+      left: -8px; /* Compensa el ancho para centrarse bien */
       z-index: -1;
     }
   

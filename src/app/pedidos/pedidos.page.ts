@@ -30,6 +30,7 @@ export interface Pedido {
   id: number;
   fecha: string;
   total: number;
+  processed: boolean;
   productos: {
     cantidad: number;
     price: number;
@@ -76,6 +77,7 @@ export class PedidosPage implements OnInit {
         this.pedidos = response.map((sale: Sale) => ({
           id: sale.sale.id,
           fecha: sale.sale.timestamp,
+          processed: sale.sale.processed,
           total: sale.operations.reduce((acc, op) => acc + op.charge, 0),
           productos: sale.operations.map(op => ({
             ...op.product,
