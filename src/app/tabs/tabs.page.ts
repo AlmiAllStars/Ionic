@@ -41,7 +41,7 @@ export class TabsPage implements OnInit {
   password: string = '';
   returningtoModal = false;
 
-  baseUrl: string = 'http://54.165.248.142:8080';
+  baseUrl: string = 'https://juegalmiapp.duckdns.org';
 
   // Imagen por defecto para manejar imágenes rotas
   defaultImage: string = '../../assets/images/default-placeholder.png';
@@ -63,6 +63,7 @@ export class TabsPage implements OnInit {
     this.notificacionService.notifications$.subscribe(notifications => {
       this.notifications = notifications;
     });
+    
 
     // Suscribirse al carrito
     this.carritoService.cart$.subscribe(cartItems => {

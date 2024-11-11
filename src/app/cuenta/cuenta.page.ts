@@ -18,7 +18,7 @@ export class CuentaPage implements OnInit {
   confirmPassword: string = '';
   editValue: string = '';
   defaultImage: string = '../../assets/images/default-placeholder.png';
-  baseUrl: string = 'http://54.165.248.142:8080';
+  baseUrl: string = 'https://juegalmiapp.duckdns.org';
 
   constructor(
     private modalController: ModalController,

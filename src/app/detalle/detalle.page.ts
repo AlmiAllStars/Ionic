@@ -17,7 +17,7 @@ import { ProductoService } from '../services/producto.service';
 export class DetallePage implements OnInit {
   wholePrice: string = '';
   fractionPrice: string = '';
-  baseUrl: string = 'http://54.165.248.142:8080';
+  baseUrl: string = 'https://juegalmiapp.duckdns.org';
 
   // Imagen por defecto para manejar imágenes rotas
   defaultImage: string = '../../assets/images/default-placeholder.png';

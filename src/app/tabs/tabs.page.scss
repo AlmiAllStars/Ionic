@@ -364,7 +364,8 @@ ion-content {
 .login-modal {
   --border-radius: 15px;
   --max-width: 90%;
-  --max-height: 60%;
+  --max-height: 480px;
+  --min-height: 480px;
   --margin: auto;
 }
 
@@ -660,6 +661,17 @@ ion-img {
   height: 50px;
 }
 
+.register-modal-content {
+  overflow: hidden; /* Evita el desplazamiento dentro del modal */
+  height: 100%; /* Asegura que el contenido ocupe todo el modal */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra el contenido verticalmente */
+}
+
+ion-content.register-modal-content {
+  --overflow: hidden; /* Desactiva el scroll en ion-content */
+}
 
 
 

@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Component, ViewChild } from '@angular/core';
+import { IonRouterOutlet, Platform } from '@ionic/angular';
 import { register } from 'swiper/element/bundle';
 import { CarritoService } from './services/carrito.service';
 import { AutenticacionService } from './services/autenticacion.service';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+
 
 register();
 @Component({
@@ -11,10 +14,13 @@ register();
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+  @ViewChild(IonRouterOutlet, { static: true }) routerOutlet!: IonRouterOutlet;
   constructor(
     private platform: Platform,
     private carritoService: CarritoService,
-    private autenticacionService: AutenticacionService
+    private autenticacionService: AutenticacionService,
+    private router: Router,
+    private location: Location
   ) {
     this.initializeApp();
   }
@@ -30,12 +36,24 @@ export class AppComponent {
       this.platform.backButton.subscribeWithPriority(10, () => {
         this.guardarCarritoYDeseados();
       });
+      this.platform.backButton.subscribeWithPriority(10, () => {
+        if (this.routerOutlet && this.routerOutlet.canGoBack()) {
+          this.routerOutlet.pop();
+        } else if (this.location.path() === '/home') {
+          (navigator as any).app.exitApp(); // Forzar salida si estás en la página principal
+        } else {
+          this.location.back(); // Retroceder usando Location
+        }
+      });
     });
+
   }
 
   ngOnInit() {
     // Puedes cargar carrito y deseados aquí si el usuario ya está autenticado
   }
+
+  
 
 
   async guardarCarritoYDeseados() {

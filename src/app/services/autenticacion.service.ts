@@ -14,7 +14,7 @@ import { Geolocation } from '@capacitor/geolocation';
 })
 export class AutenticacionService {
   constructor(private http: HttpClient, private carritoService: CarritoService) {}
-  private apiUrl = 'http://54.165.248.142:8080/juegalmi/ws/';
+  private apiUrl = 'https://juegalmiapp.duckdns.org/juegalmi/ws/';
   private usuarioActualSubject = new BehaviorSubject<any | null>(null);
   usuarioActual$ = this.usuarioActualSubject.asObservable();
 
@@ -34,7 +34,7 @@ export class AutenticacionService {
   private idNuevo = 2;
 
   login(email: string, password: string): Observable<any> {
-    const url = 'http://54.165.248.142:8080/api/login'; // Endpoint de login
+    const url = 'https://juegalmiapp.duckdns.org/api/login'; // Endpoint de login
     const body = { email, password };
   
     return this.http.post<any>(url, body).pipe(
@@ -221,7 +221,7 @@ export class AutenticacionService {
       ...userData, // Los datos a actualizar
     };
 
-    return this.http.put<any>('http://54.165.248.142:8080/juegalmi/ws/secure/editClient', body, { headers });
+    return this.http.put<any>('https://juegalmiapp.duckdns.org/juegalmi/ws/secure/editClient', body, { headers });
   }
 
   actualizarUsuarioLocal(fieldToEdit: string, editValue: any): void {
@@ -341,7 +341,7 @@ export class AutenticacionService {
       formData.append('picture', blob, 'client-picture.jpg');
 
       // Subir la imagen al servidor
-      return this.http.post('https://your-server.com/juegalmi/ws/secure/uploadClientPicture', formData).toPromise();
+      return this.http.post('https://juegalmiapp.duckdns.org/juegalmi/ws/secure/uploadClientPicture', formData).toPromise();
     } catch (error) {
       console.error('Error capturing or uploading picture:', error);
       throw error;

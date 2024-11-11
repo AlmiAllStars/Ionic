@@ -16,7 +16,7 @@ export class ConsolasComponent implements OnInit {
   seccionActual = 'consolas';
   busquedaActiva = false;
   recognition: any;
-  baseUrl: string = 'http://54.165.248.142:8080';
+  baseUrl: string = 'https://juegalmiapp.duckdns.org';
 
   // Imagen por defecto para manejar imágenes rotas
   defaultImage: string = '../../assets/images/default-placeholder.png';
