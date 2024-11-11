@@ -8,10 +8,6 @@
     </ion-buttons>
 
     <ion-buttons slot="end">
-      <ion-button id="notifications-button" [style.display]="isLoggedIn ? 'block' : 'none'">
-        <div class="noti-length">{{ notifications.length }}</div>
-        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
-      </ion-button>
 
 
       <ion-button *ngIf="isLoggedIn" (click)="openCart()">
