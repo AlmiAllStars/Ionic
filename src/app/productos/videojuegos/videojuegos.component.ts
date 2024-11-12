@@ -30,7 +30,7 @@ export class VideojuegosComponent  implements OnInit {
 
   async ngOnInit() {
     const loading = await this.loadingController.create({
-      message: 'Cargando consolas...',
+      message: 'Cargando videojuegos...',
       cssClass: 'custom-loading',
       spinner: 'crescent', // Spinner con estilo moderno
     });

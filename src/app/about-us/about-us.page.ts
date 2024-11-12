@@ -14,10 +14,10 @@ export class AboutUsPage implements OnInit {
   ];
 
   equipo = [
-    { name: 'Juan Pérez', role: 'CEO', photo: '../../assets/images/team1.webp' },
-    { name: 'María García', role: 'CTO', photo: '../../assets/images/team2.webp' },
-    { name: 'Carlos López', role: 'CMO', photo: '../../assets/images/team3.webp' },
-    { name: 'Ana Martínez', role: 'COO', photo: '../../assets/images/team4.webp' }
+    { name: 'Maria Garcia', role: 'CEO', photo: '../../assets/images/team1.webp' },
+    { name: 'Juan Pérez', role: 'CTO', photo: '../../assets/images/team2.webp' },
+    { name: 'Ana Martínez', role: 'CMO', photo: '../../assets/images/team3.webp' },
+    { name: 'Carlos Lopez', role: 'COO', photo: '../../assets/images/team4.webp' }
   ];
 
   constructor() {}

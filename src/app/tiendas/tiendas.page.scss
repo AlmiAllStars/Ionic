@@ -17,8 +17,10 @@
   }
   
   ion-button {
-    --color: #007bff;
+    --background: #007bff; /* Color del fondo */
+    --color: white; /* Color del texto */
   }
+  
 
   ion-header{
     padding-top: 350px; /* Añade 100px de espacio arriba para que el contenido no se superponga */

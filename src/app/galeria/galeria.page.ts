@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Share } from '@capacitor/share';
 
 @Component({
   selector: 'app-galeria',
@@ -43,8 +44,17 @@ export class GaleriaPage {
     // Implementa la funcionalidad de "Like"
   }
 
-  shareImage() {
-    // Implementa la funcionalidad de "Compartir"
+  async shareImage() {
+    try {
+      await Share.share({
+        title: 'Comparte esta imagen',
+        text: 'Echa un vistazo a esta imagen!',
+        url: this.selectedImage,
+        dialogTitle: 'Compartir con...'
+      });
+    } catch (error) {
+      console.error('Error al compartir:', error);
+    }
   }
 
   prevImage() {

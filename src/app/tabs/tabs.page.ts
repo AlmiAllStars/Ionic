@@ -291,11 +291,36 @@ export class TabsPage implements OnInit {
   async onCameraIconClick() {
     try {
       const response = await this.autenticacionService.captureAndUploadPicture();
-      console.log('Upload successful:', response);
+      this.verificarSesion();
     } catch (error) {
-      console.error('Failed to upload picture:', error);
+      if (error instanceof Error) {
+        console.error('Upload failed with message:', error.message);
+      } else if (typeof error === 'object' && error !== null) {
+        console.error('Upload failed with unknown object:', JSON.stringify(error));
+        
+        if ('response' in error) {
+          const response = (error as { response: unknown }).response;
+          
+          if (typeof response === 'object' && response !== null) {
+            if ('status' in response && 'data' in response) {
+              const status = (response as { status: number }).status;
+              const data = (response as { data: any }).data;
+              console.error('HTTP Response Error:', { status, data });
+            } else {
+              console.error('Response object without status or data:', response);
+            }
+          } else {
+            console.error('Unknown response type:', response);
+          }
+        }
+      } else {
+        console.error('Upload failed with unknown error type:', error);
+      }
     }
   }
+  
+  
+  
 
   recuperarContrasena() {
     this.showToast('Funcionalidad de recuperación aún no implementada');

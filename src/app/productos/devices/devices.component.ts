@@ -142,7 +142,7 @@ export class DevicesComponent implements OnInit {
 
   async verDetalles(dispositivo: Dispositivo) {
     const loading = await this.loadingController.create({
-      message: 'Cargando producto...',
+      message: 'Cargando dispositivos...',
       spinner: 'crescent',
     });
     await loading.present();

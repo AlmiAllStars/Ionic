@@ -30,7 +30,7 @@
   </ion-segment>
 
   <!-- Selección de Marca dentro del Tipo Seleccionado -->
-  <ion-list *ngIf="selectedType">
+  <ion-list class="tipos" *ngIf="selectedType">
     <ion-item *ngFor="let tipo of tiposFiltrados">
       <ion-thumbnail slot="start">
         <img [src]="tipo.imageUrl">
@@ -46,7 +46,7 @@
   </ion-list>
 
   <!-- Selección de Modelo dentro del Tipo Seleccionado -->
-  <ion-item *ngIf="tipoSeleccionado">
+  <ion-item class="tipos" *ngIf="tipoSeleccionado">
     <ion-label>Modelo</ion-label>
     <ion-select [(ngModel)]="modeloSeleccionado" placeholder="Selecciona el modelo">
       <ion-select-option *ngFor="let modelo of modelosFiltrados" [value]="modelo">{{ modelo.name }}</ion-select-option>

@@ -58,7 +58,7 @@ export class AutenticacionService {
                 contraseña: '', // No almacenar la contraseña
                 telefono: usuarioCompleto.phone || 0,
                 fechaRegistro: new Date(usuarioCompleto.registration_date),
-                direccion: '',
+                direccion: usuarioCompleto.address || '',
                 codigoPostal: usuarioCompleto.postal_code || -1,
                 picture: usuarioCompleto.picture || '',
 
@@ -326,25 +326,53 @@ export class AutenticacionService {
     try {
       // Abrir la cámara del dispositivo
       const photo = await Camera.getPhoto({
-        resultType: CameraResultType.Uri, // Obtiene la URI de la imagen
+        resultType: CameraResultType.DataUrl, // Obtiene la imagen en formato base64
         source: CameraSource.Camera, // Abre directamente la cámara
         quality: 90,
       });
-
-      if (!photo || !photo.webPath) {
+  
+      if (!photo || !photo.dataUrl) {
         throw new Error('No photo captured');
       }
-
+  
       // Crear un FormData para enviar la imagen al servidor
       const formData = new FormData();
-      const blob = await fetch(photo.webPath).then((r) => r.blob());
+      const blob = this.dataUrlToBlob(photo.dataUrl);
       formData.append('picture', blob, 'client-picture.jpg');
-
+  
+      // Obtener headers con el token
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
+  
       // Subir la imagen al servidor
-      return this.http.post('https://juegalmiapp.duckdns.org/juegalmi/ws/secure/uploadClientPicture', formData).toPromise();
+      return this.http
+        .post('https://juegalmiapp.duckdns.org/juegalmi/ws/secure/uploadClientPicture', formData, {
+          headers: headers, // Incluir el token en los headers
+        })
+        .toPromise();
     } catch (error) {
-      console.error('Error capturing or uploading picture:', error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+      } else if (typeof error === 'object' && error !== null) {
+        console.error('Unknown object error:', JSON.stringify(error));
+        if ('response' in error) {
+          console.error('HTTP Response Error:', error.response);
+        }
+      } else {
+        console.error('Unknown error type:', error);
+      }
       throw error;
     }
+  }
+  
+
+  private dataUrlToBlob(dataUrl: string): Blob {
+    const byteString = atob(dataUrl.split(',')[1]);
+    const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
   }
 }

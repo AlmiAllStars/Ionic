@@ -17,7 +17,8 @@
 
       <ion-button (click)="openLoginModal()">
         <ion-avatar>
-          <img src="../../assets/sample-image.jpg"/>
+          <img *ngIf="!isLoggedIn" src="../../assets/icon/default-avatar.png" alt="Avatar predeterminado" />
+          <img *ngIf="isLoggedIn" [src]="baseUrl + userPicture" alt="Avatar del usuario" />
         </ion-avatar>
       </ion-button>
     </ion-buttons>
