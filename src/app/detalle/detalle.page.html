@@ -11,7 +11,7 @@
 </ion-header>
 
 <ion-content>
-  <div class="product-container">
+  <div class="product-container" [ngClass]="{'scale-animation': aplicarAnimacion}">
     <!-- Imagen del producto -->
     <div class="product-image">
       <img (error)="handleImageError($event)" [src]="baseUrl + productoService.productoActual.picture" alt="{{ productoService.productoActual.name }}" />
@@ -101,12 +101,6 @@
             </ion-button>
           </div>
 
-          <!-- Tercera línea: Notify Section -->
-          <div class="notify-section">
-            <ion-button color="danger" (click)="addWish()">
-              <ion-icon name="heart"></ion-icon>
-            </ion-button>            
-          </div>
         </div>
       </div>
     </div>

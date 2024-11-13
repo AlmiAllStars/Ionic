@@ -11,6 +11,8 @@ export class ProductosPage {
 
   constructor(private router: Router,  private route: ActivatedRoute ) {}
 
+
+
   cambiarPagina(ruta: string) {
     if (!ruta) return;
     this.rutaActual = ruta;

@@ -22,13 +22,16 @@ export class DetallePage implements OnInit {
   // Imagen por defecto para manejar imágenes rotas
   defaultImage: string = '../../assets/images/default-placeholder.png';
 
+  aplicarAnimacion = false;
+
   constructor(
     private carritoService: CarritoService,
     private router: Router,
     private autenticacionService: AutenticacionService,
     private toastController: ToastController,
     private tabsPage: TabsPage,
-    public productoService: ProductoService
+    public productoService: ProductoService,
+    public route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -40,9 +43,14 @@ export class DetallePage implements OnInit {
       this.router.navigate(['/tabs/home']);
       return;
     }
+
+    this.route.queryParams.subscribe(params => {
+      this.aplicarAnimacion = params['animacion'] === 'true';
+    });
   
     this.formatPrice();
   }
+
   
   handleImageError(event: Event) {
     const imgElement = event.target as HTMLImageElement;

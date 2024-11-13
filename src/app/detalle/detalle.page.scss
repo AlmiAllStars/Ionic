@@ -169,5 +169,22 @@ ion-header {
   .notify-section ion-button {
     margin: 0 auto;
   }
+
+  @keyframes scaleUp {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.3);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .scale-animation {
+    animation: scaleUp 0.5s ease-in-out 3; /* 0.5s por repetición, se repite 3 veces */
+  }
+  
   
   

@@ -136,7 +136,9 @@ export class TabsPage implements OnInit {
     }
     try {
       await this.productoService.obtenerProductoPorId(randomProduct.id);
-      this.router.navigate(['tabs/detalle']); // Navegar después de cargar el producto
+      this.router.navigate(['/tabs/detalle'], {
+        queryParams: { animacion: true }
+      });
     } catch (error) {
       this.showToast('Error al cargar el producto.');
     } finally {
@@ -218,7 +220,7 @@ export class TabsPage implements OnInit {
 
   async verificarSesion() {
     const loading = await this.loadingController.create({
-      message: 'Verificando sesión...',
+      message: 'Verificando sesión de usuario...',
       cssClass: 'custom-loading',
       spinner: 'crescent',
     });
