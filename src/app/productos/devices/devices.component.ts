@@ -16,7 +16,7 @@ export class DevicesComponent implements OnInit {
   seccionActual = 'dispositivos';
   busquedaActiva = false;
   recognition: any;
-  baseUrl: string = 'https://juegalmiapp.duckdns.org';
+  baseUrl: string = 'https://retodalmi.duckdns.org';
 
   // Imagen por defecto para manejar imágenes rotas
   defaultImage: string = '../../assets/images/default-placeholder.png';

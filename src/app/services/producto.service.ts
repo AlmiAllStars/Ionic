@@ -12,7 +12,7 @@ import { CarritoService } from './carrito.service';
   providedIn: 'root'
 })
 export class ProductoService {
-  private apiUrl = 'https://juegalmiapp.duckdns.org/juegalmi/ws/';
+  private apiUrl = 'https://retodalmi.duckdns.org/juegalmi/ws/';
   private usarDatosLocales = false; // Cambiar a `false` para usar la API real
   private productoId: number | null = null;
   productoActual: any = null;

@@ -9,7 +9,7 @@ import { AutenticacionService } from './autenticacion.service';
   providedIn: 'root'
 })
 export class CarritoService {
-  private apiUrl = 'https://juegalmiapp.duckdns.org/juegalmi/ws/';
+  private apiUrl = 'https://retodalmi.duckdns.org/juegalmi/ws/';
   private cartSubject = new BehaviorSubject<CarritoItem[]>([]);
   private wishlistSubject = new BehaviorSubject<Producto[]>([]);
 

@@ -53,7 +53,7 @@ export class PedidosPage implements OnInit {
   pedidoSeleccionado: any | null = null; // Pedido que se muestra en el modal
   searchTerm: string = ''; // Término de búsqueda
   isDetalleModalOpen: boolean = false; // Estado del modal de detalle
-  baseUrl: string = 'https://juegalmiapp.duckdns.org';
+  baseUrl: string = 'https://retodalmi.duckdns.org';
 
   // Imagen por defecto para manejar imágenes rotas
   defaultImage: string = '../../assets/images/default-placeholder.png';

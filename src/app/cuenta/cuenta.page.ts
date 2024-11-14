@@ -18,7 +18,7 @@ export class CuentaPage implements OnInit {
   confirmPassword: string = '';
   editValue: string = '';
   defaultImage: string = '../../assets/images/default-placeholder.png';
-  baseUrl: string = 'https://juegalmiapp.duckdns.org';
+  baseUrl: string = 'https://retodalmi.duckdns.org';
   
 
   constructor(
